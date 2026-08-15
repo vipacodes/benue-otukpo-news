@@ -320,7 +320,6 @@
 </div>
 
 <div id="hint">✨ Touch anywhere — butterflies take flight &amp; the garden sings ✨</div>
-<button id="sndBtn">🔊 SOUND</button>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
 
@@ -824,9 +823,6 @@ function unlockAll(){
   tryYT();
 }
 ['pointerdown','pointerup','keydown','touchend','touchcancel'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
-document.getElementById('sndBtn').addEventListener('click',function(){
-  unlockAll();this.style.display='none';
-});
 document.getElementById('skyBtn').addEventListener('click',function(){
   const dawn=document.body.classList.toggle('dawn');
   this.textContent=dawn?'\u{1F319}':'\u{1F305}';
