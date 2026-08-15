@@ -103,12 +103,13 @@
   .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
   .forline{font-size:clamp(14px,2vw,17px);letter-spacing:4px;color:#e3ccff;text-transform:uppercase;margin-bottom:14px;
     text-shadow:0 2px 18px rgba(20,5,45,.9)}
-  .crown{animation:crownBounce 2.6s ease-in-out infinite;
-    filter:drop-shadow(0 0 12px rgba(255,214,120,.5)) drop-shadow(0 0 26px rgba(170,90,255,.45))}
-  .crown svg{width:clamp(100px,18vw,150px);display:block}
-  .glint{transform-box:fill-box;transform-origin:center;opacity:0;
+  .crown{position:relative;animation:crownBounce 2.6s ease-in-out infinite;
+    filter:drop-shadow(0 0 12px rgba(255,214,120,.55)) drop-shadow(0 0 28px rgba(170,90,255,.5))}
+  .crown img{width:clamp(110px,20vw,170px);display:block}
+  .cglint{position:absolute;width:16px;height:16px;background:#fff;opacity:0;
+    clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);
     animation:glint 2.6s ease-in-out infinite;animation-delay:var(--gd)}
-  @keyframes glint{0%,100%{opacity:0;transform:scale(.25) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(90deg)}}
+  @keyframes glint{0%,100%{opacity:0;transform:scale(.2) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(90deg)}}
   @keyframes crownBounce{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
   h1{
     font-size:clamp(40px,7.6vw,76px);font-weight:700;letter-spacing:1px;margin:10px 0 6px;
@@ -228,34 +229,11 @@
   <div class="hero">
     <div class="forline">✦ for Gheefted ✦</div>
     <div class="crown">
-      <svg viewBox="0 0 140 96" aria-label="crown">
-        <defs>
-          <linearGradient id="goldg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#ffefad"/><stop offset=".45" stop-color="#f6bc42"/><stop offset="1" stop-color="#b97c14"/>
-          </linearGradient>
-          <radialGradient id="amethg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#f0dcff"/><stop offset=".4" stop-color="#a05cf5"/><stop offset="1" stop-color="#43108a"/></radialGradient>
-          <radialGradient id="emerg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#dcffe9"/><stop offset=".4" stop-color="#37d183"/><stop offset="1" stop-color="#0a5c36"/></radialGradient>
-          <radialGradient id="saphg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#e0efff"/><stop offset=".4" stop-color="#4f8ae0"/><stop offset="1" stop-color="#123a7a"/></radialGradient>
-          <radialGradient id="roseg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#ffe3ee"/><stop offset=".4" stop-color="#ef5fa4"/><stop offset="1" stop-color="#8a1650"/></radialGradient>
-        </defs>
-        <path d="M16,66 L24,26 L44,46 L70,12 L96,46 L116,26 L124,66 Z" fill="url(#goldg)" stroke="#8a5a10" stroke-width="2" stroke-linejoin="round"/>
-        <circle cx="24" cy="24" r="5" fill="url(#goldg)" stroke="#8a5a10" stroke-width="1.5"/>
-        <circle cx="70" cy="10" r="6" fill="url(#goldg)" stroke="#8a5a10" stroke-width="1.5"/>
-        <circle cx="116" cy="24" r="5" fill="url(#goldg)" stroke="#8a5a10" stroke-width="1.5"/>
-        <rect x="14" y="64" width="112" height="18" rx="9" fill="url(#goldg)" stroke="#8a5a10" stroke-width="2"/>
-        <ellipse cx="70" cy="73" rx="9" ry="8" fill="url(#amethg)" stroke="#5a1e9e" stroke-width="1.5"/>
-        <ellipse cx="44" cy="73" rx="6.5" ry="6" fill="url(#emerg)" stroke="#0d5c33" stroke-width="1.3"/>
-        <ellipse cx="96" cy="73" rx="6.5" ry="6" fill="url(#saphg)" stroke="#16407e" stroke-width="1.3"/>
-        <circle cx="27" cy="73" r="4.2" fill="url(#roseg)" stroke="#8a1650"/>
-        <circle cx="113" cy="73" r="4.2" fill="url(#emerg)" stroke="#0d5c33"/>
-        <circle cx="70" cy="36" r="7" fill="url(#amethg)" stroke="#5a1e9e" stroke-width="1.5"/>
-        <circle cx="40" cy="48" r="4" fill="url(#saphg)" stroke="#16407e"/>
-        <circle cx="100" cy="48" r="4" fill="url(#roseg)" stroke="#8a1650"/>
-        <g transform="translate(70,33)"><path class="glint" style="--gd:0s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
-        <g transform="translate(45,71) scale(.7)"><path class="glint" style="--gd:.9s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
-        <g transform="translate(97,71) scale(.7)"><path class="glint" style="--gd:1.7s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
-        <g transform="translate(70,71) scale(.8)"><path class="glint" style="--gd:2.3s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
-      </svg>
+      <img id="crownImg" alt="crown">
+      <i class="cglint" style="--gd:0s;left:47%;top:64%"></i>
+      <i class="cglint" style="--gd:.9s;left:31%;top:74%"></i>
+      <i class="cglint" style="--gd:1.6s;left:63%;top:73%"></i>
+      <i class="cglint" style="--gd:2.2s;left:49%;top:12%"></i>
     </div>
     <h1>Happy 2 Years,<br>Baby</h1>
     <p class="sub">A garden of purple, grown from two years of us 🦋</p>
@@ -278,8 +256,8 @@
     <div class="heartwrap reveal">
       <div class="heartborder"></div>
       <div class="heartframe">
-        <video id="herVid" src="assets/her.mp4" autoplay loop muted playsinline></video>
-        <img id="herImg" src="assets/her.jpg" alt="My Baby">
+        <video id="herVid" autoplay loop muted playsinline></video>
+        <img id="herImg" alt="My Baby">
         <div class="heartfallback"><span class="em beat" style="font-size:70px">💜</span></div>
       </div>
       <div class="heartcap">My Baby 💜</div>
@@ -406,6 +384,33 @@ function keySprite(src){
     im.src=src;
   });
 }
+/* photoreal crown — flood-fill removes the white backdrop from the edges in */
+function keyFlood(src){
+  return new Promise(res=>{
+    const im=new Image();
+    im.onload=()=>{
+      const S=460,hh=Math.round(S*im.height/im.width);
+      const c=document.createElement('canvas');c.width=S;c.height=hh;
+      const x=c.getContext('2d');x.drawImage(im,0,0,S,hh);
+      const d=x.getImageData(0,0,S,hh),p=d.data;
+      const vis=new Uint8Array(S*hh),st=[];
+      const bg=i=>p[i]>230&&p[i+1]>230&&p[i+2]>230;
+      const push=(px,py)=>{const i=py*S+px;if(!vis[i]&&bg(i*4))st.push(i);};
+      for(let px=0;px<S;px++){push(px,0);push(px,hh-1);}
+      for(let py=0;py<hh;py++){push(0,py);push(S-1,py);}
+      while(st.length){
+        const i=st.pop();if(vis[i])continue;vis[i]=1;p[i*4+3]=0;
+        const px=i%S,py=(i/S)|0;
+        if(px>0)push(px-1,py);if(px<S-1)push(px+1,py);
+        if(py>0)push(px,py-1);if(py<hh-1)push(px,py+1);
+      }
+      x.putImageData(d,0,0);
+      res(c.toDataURL('image/png'));
+    };
+    im.src=src;
+  });
+}
+keyFlood('assets/crown.png').then(u=>{document.getElementById('crownImg').src=u;});
 const butterflies=[];
 const MAX_B=14;
 let SPR=[];
@@ -593,10 +598,17 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   const img=document.getElementById('herImg'),
         vid=document.getElementById('herVid'),
         fb=document.querySelector('.heartfallback');
-  vid.addEventListener('error',()=>vid.remove());
-  img.addEventListener('error',()=>img.remove());
-  vid.addEventListener('loadeddata',()=>{fb.style.display='none';if(img.parentNode)img.remove();});
-  img.addEventListener('load',()=>{fb.style.display='none';if(vid.parentNode)vid.remove();});
+  let shown=false;
+  const ok=()=>{if(!shown){shown=true;fb.style.display='none';}};
+  function chain(el,sources){
+    let i=0;
+    el.addEventListener('error',()=>{i++;if(i<sources.length)el.src=sources[i];else el.remove();});
+    el.src=sources[0];
+  }
+  vid.addEventListener('loadeddata',()=>{ok();if(img.parentNode)img.remove();});
+  img.addEventListener('load',()=>{ok();if(vid.parentNode)vid.remove();});
+  chain(vid,['her.mp4','assets/her.mp4']);
+  chain(img,['her.jpg','assets/her.jpg']);
 })();
 /* ---------- sky tip fades after a while ---------- */
 setTimeout(()=>{document.getElementById('skyTip').style.opacity=0;},9000);
@@ -676,46 +688,67 @@ function noiseBuf(){
   for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   return b;
 }
-/* --- romantic: warm pad + music-box melody --- */
-const CHORDS=[[220,277.18,329.63],[174.61,220,261.63],[196,246.94,293.66],[164.81,207.65,246.94]];
-const MEL=[440,523.25,659.25,587.33,523.25,440,392,440,523.25,587.33,659.25,783.99];
-let mi=0,ci=0;
-function padChord(){
-  if(soundOn){
-    const now=AC.currentTime;
-    CHORDS[ci%CHORDS.length].forEach((f,i)=>{
-      [0,4].forEach(det=>{
-        const o=AC.createOscillator(),g=AC.createGain();
-        o.type='sine';o.frequency.value=f/2;o.detune.value=det;
-        g.gain.setValueAtTime(0,now);
-        g.gain.linearRampToValueAtTime(.028,now+2.4);
-        g.gain.linearRampToValueAtTime(0,now+7);
-        o.connect(g);g.connect(bus);o.start(now);o.stop(now+7.2);
-      });
-      if(i===0){
-        const o=AC.createOscillator(),g=AC.createGain();
-        o.type='sine';o.frequency.value=f/4;
-        g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.05,now+1.5);g.gain.linearRampToValueAtTime(0,now+6.8);
-        o.connect(g);g.connect(bus);o.start(now);o.stop(now+7);
-      }
-    });
-    ci++;
-  }
-  setTimeout(padChord,6000);
+/* --- romantic score: piano waltz + strings, with reverb --- */
+let verb=null;
+function makeVerb(){
+  const len=Math.floor(AC.sampleRate*2.4);
+  const buf=AC.createBuffer(2,len,AC.sampleRate);
+  for(let c=0;c<2;c++){const d=buf.getChannelData(c);
+    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8);}
+  verb=AC.createConvolver();verb.buffer=buf;
+  const vg=AC.createGain();vg.gain.value=.55;
+  verb.connect(vg);vg.connect(master);
+  const send=AC.createGain();send.gain.value=.5;
+  bus.connect(send);send.connect(verb);
 }
-function melodyNote(){
-  if(soundOn){
-    const now=AC.currentTime,f=MEL[mi%MEL.length]*(Math.random()<.15?2:1);
-    mi++;
-    const o=AC.createOscillator(),o2=AC.createOscillator(),g=AC.createGain();
-    o.type='triangle';o.frequency.value=f;
-    o2.type='sine';o2.frequency.value=f*2;
-    g.gain.setValueAtTime(.07,now);
-    g.gain.exponentialRampToValueAtTime(.0001,now+2.2);
-    o.connect(g);o2.connect(g);g.connect(bus);
-    o.start(now);o2.start(now);o.stop(now+2.3);o2.stop(now+2.3);
-  }
-  setTimeout(melodyNote,rnd(900,2200));
+const BPM=84,BEAT=60/BPM,BAR=BEAT*3;
+const SCORE=[
+ {ch:[220,261.63,329.63],mel:[[440,2],[523.25,1]]},
+ {ch:[174.61,220,261.63],mel:[[587.33,2],[523.25,1]]},
+ {ch:[261.63,329.63,392],mel:[[659.25,2],[587.33,1]]},
+ {ch:[196,246.94,293.66],mel:[[493.88,3]]},
+ {ch:[220,261.63,329.63],mel:[[440,2],[523.25,1]]},
+ {ch:[174.61,220,261.63],mel:[[698.46,2],[659.25,1]]},
+ {ch:[261.63,329.63,392],mel:[[587.33,2],[493.88,1]]},
+ {ch:[196,246.94,293.66],mel:[[440,3]]}
+];
+function piano(f,t,dur,vel){
+  [[1,1],[2,.4],[3,.18],[4,.08]].forEach(([m,a])=>{
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type='sine';o.frequency.value=f*m;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(vel*a,t+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t+Math.max(.5,dur*1.1));
+    o.connect(g);g.connect(bus);o.start(t);o.stop(t+dur*1.2+.1);
+  });
+}
+function strings(ch,t,dur){
+  ch.forEach(f=>{
+    [-6,5].forEach(det=>{
+      const o=AC.createOscillator(),g=AC.createGain(),lp=AC.createBiquadFilter();
+      o.type='sawtooth';o.frequency.value=f/2;o.detune.value=det;
+      lp.type='lowpass';lp.frequency.value=750;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(.012,t+1.1);
+      g.gain.linearRampToValueAtTime(0,t+dur+.8);
+      o.connect(lp);lp.connect(g);g.connect(bus);
+      o.start(t);o.stop(t+dur+1);
+    });
+  });
+}
+function scheduleLoop(){
+  if(!soundOn){setTimeout(scheduleLoop,2000);return;}
+  const t0=AC.currentTime+.15;
+  SCORE.forEach((bar,i)=>{
+    const tb=t0+i*BAR,[rt,th,fi]=bar.ch;
+    piano(rt/2,tb,BEAT*1.6,.16);
+    piano(th,tb+BEAT,BEAT*.9,.07);
+    piano(fi,tb+2*BEAT,BEAT*.9,.07);
+    strings(bar.ch,tb,BAR);
+    let mt=tb;
+    bar.mel.forEach(([f,b])=>{piano(f,mt,b*BEAT*.95,.14);mt+=b*BEAT;});
+  });
+  setTimeout(scheduleLoop,SCORE.length*BAR*1000-120);
 }
 /* --- nature: breeze, birdsong, leaf rustle --- */
 function breeze(){
@@ -773,7 +806,7 @@ function startSound(){
   initAudio();
   AC.resume().then(()=>{
     master.gain.linearRampToValueAtTime(.9,AC.currentTime+2.5);
-    padChord();setTimeout(melodyNote,800);
+    makeVerb();scheduleLoop();
     breeze();setTimeout(bird,1500);setTimeout(rustle,3000);
     const mb=document.getElementById('musicBtn');
     mb.classList.add('on');mb.textContent='\u{1F3B6}';

@@ -22,16 +22,18 @@ Just open `index.html` in any browser (double-click it). No installs needed.
 4. In ~1 minute her page is live at `https://YOUR_USERNAME.github.io/for-my-princess/`
 
 ## Add her photo or video to the heart frame 💜
-1. Save her **photo** as `assets/her.jpg`  —  or her **video** as `assets/her.mp4`
-   (video plays automatically, muted, on loop; if both exist, the video wins).
-2. Push it:
-   ```bash
-   git add assets/her.jpg
-   git commit -m "My Baby in the heart frame 💜"
-   git push
-   ```
-3. Done — the heart frame shows it automatically. Until then it shows a
-   beating 💜.
+The heart frame looks for these files (root of the repo first, then `assets/`):
+- photo: `her.jpg`
+- video: `her.mp4`  (autoplays muted on loop; if both exist, the photo wins)
+
+**Easiest way — no git needed (works for videos too):**
+1. Go to https://github.com/vipacodes/2-years-anniversary
+2. Click **Add file → Upload files**
+3. Drag in your file renamed exactly `her.jpg` or `her.mp4`
+   (GitHub's limit is 25 MB per file — trim long videos)
+4. Commit. The heart shows it automatically within a minute.
+
+Until a file exists, the heart shows a beating 💜.
 
 ## Personalize
 - **Start date** (for the live counter): open `index.html`, find
