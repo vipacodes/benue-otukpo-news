@@ -761,12 +761,17 @@ function rustle(){
 }
 /* --- background song: "American Love" — Qing Madi (official YouTube) --- */
 const QING_VIDEO='cypUlwCKq0k';
+let localSong=null;
+fetch('assets/our-song.mp3',{method:'HEAD'}).then(r=>{
+  if(r.ok){localSong=new Audio('assets/our-song.mp3');localSong.loop=true;localSong.volume=.9;localSong.preload='auto';}
+}).catch(()=>{});
 let ytPlayer=null,ytReady=false,ytStarted=false;
 window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('ytbox',{
     width:'2',height:'2',
+    host:'https://www.youtube-nocookie.com',
     videoId:QING_VIDEO,
-    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,autoplay:1,mute:1},
+    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,autoplay:1,mute:1,iv_load_policy:3,fs:0,disablekb:1},
     events:{
       onReady:function(){ytReady=true;try{ytPlayer.mute();ytPlayer.playVideo();}catch(e){}tryYT();},
       onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)ytStarted=true;}
@@ -798,7 +803,10 @@ function unlockAll(){
   if(!soundReady&&soundOn)startSound();
   if(!unlocked){
     unlocked=true;
-    if(ytPlayer&&ytPlayer.unMute){
+    if(localSong){
+      try{if(ytPlayer&&ytPlayer.pauseVideo)ytPlayer.pauseVideo();}catch(e){}
+      localSong.currentTime=0;localSong.play().catch(()=>{});
+    }else if(ytPlayer&&ytPlayer.unMute){
       try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.seekTo(0,true);ytPlayer.playVideo();}catch(e){}
     }
     let guard=0;
@@ -815,7 +823,7 @@ function unlockAll(){
   }
   tryYT();
 }
-['pointerdown','pointerup','keydown','touchend','touchcancel'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
+['pointerdown','pointerup','keydown','touchend','touchcancel','wheel'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
 document.getElementById('skyBtn').addEventListener('click',function(){
   const dawn=document.body.classList.toggle('dawn');
   this.textContent=dawn?'\u{1F319}':'\u{1F305}';
