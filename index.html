@@ -811,11 +811,15 @@ function startSound(){
   });
 }
 startSound(); /* tries audible autoplay immediately */
+let unlocked=false;
 function unlockAll(){
   if(AC&&AC.state==='suspended')AC.resume();
   if(!soundReady&&soundOn)startSound();
-  if(ytPlayer&&ytPlayer.unMute){
-    try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.seekTo(0,true);ytPlayer.playVideo();}catch(e){}
+  if(!unlocked){
+    unlocked=true;
+    if(ytPlayer&&ytPlayer.unMute){
+      try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.seekTo(0,true);ytPlayer.playVideo();}catch(e){}
+    }
   }
   tryYT();
 }
