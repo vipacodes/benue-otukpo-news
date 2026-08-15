@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>For Gheefted 💜 Happy 2 Years, Baby</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦋</text></svg>">
+<title>Benue Otukpo News | August 15th Edition</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -419,7 +419,7 @@ function keyFlood(src){
 }
 keyFlood('assets/crown.png?v=6').then(u=>{document.getElementById('crownImg').src=u;});
 const butterflies=[];
-const MAX_B=18;
+const MAX_B=24;
 let SPR=[];
 let SPR_POOL=[];
 
@@ -457,7 +457,7 @@ function retarget(b,t){
 }
 Promise.all(SPRITES.map(keySprite)).then(spr=>{
   SPR=spr;
-  SPR_POOL=spr.concat(spr.slice(0,4),spr.slice(0,4));
+  SPR_POOL=spr;
   const n=Math.max(6,Math.min(10,Math.floor(W()/170)));
   for(let i=0;i<n;i++) makeButterfly(rnd(W()*.1,W()*.9),rnd(H()*.1,H()*.6));
   requestAnimationFrame(loop);
@@ -541,9 +541,16 @@ window.addEventListener('pointerdown',e=>{
   const x=e.clientX,y=e.clientY;
   if(!hintDone){hintDone=true;document.getElementById('hint').style.opacity=0;}
   burst(x,y,Math.floor(rnd(6,10)));
-  if(butterflies.length<MAX_B){
-    makeButterfly(x,y); burst(x,y,8);
-    if(butterflies.length<MAX_B) makeButterfly(x+rnd(-40,40),y+rnd(-30,20));
+  for(let i=0;i<2;i++){
+    const px=x+rnd(-34,34),py=y+rnd(-24,24);
+    if(butterflies.length<MAX_B){ makeButterfly(px,py); }
+    else{
+      const b=pick(butterflies);
+      b.x=px;b.y=py;b.vx=rnd(-1.2,1.2);b.vy=rnd(-2,-.6);
+      b.tx=rnd(W()*.08,W()*.92);b.ty=rnd(H()*.08,H()*.6);
+      b.ret=performance.now()+rnd(2200,4500);b.mode='flit';
+    }
+    burst(px,py,6);
   }
   const sorted=[...butterflies].sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y));
   sorted.slice(0,2).forEach(b=>{b.tx=x+rnd(-40,40);b.ty=Math.max(50,y-rnd(20,70));b.ret=performance.now()+2600;b.mode='flit';});
