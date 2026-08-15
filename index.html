@@ -227,7 +227,6 @@
 <div id="gardenBG"></div>
 <div id="bgDawn"></div>
 <div id="veil"></div>
-<div id="ytbox" style="position:fixed;bottom:0;right:0;width:2px;height:2px;opacity:.01;pointer-events:none"></div>
 <div id="blooms"></div>
 
 <div id="content">
@@ -623,7 +622,7 @@ const kissSfx=new Audio(KISS_CHAIN[0]);kissSfx.preload='auto';
 let kissI=0;
 kissSfx.addEventListener('error',()=>{kissI++;if(kissI<KISS_CHAIN.length)kissSfx.src=KISS_CHAIN[kissI];});
 function duckMusic(down){
-  if(ytPlayer&&ytPlayer.setVolume){try{ytPlayer.setVolume(down?12:70);}catch(e){}}
+  if(localSong)localSong.volume=down?.12:.9;
 }
 /* realistic kiss: smack + lip-part suction + low "mwah" formants */
 function kissSound(){
@@ -759,41 +758,15 @@ function rustle(){
   }
   setTimeout(rustle,rnd(4000,9000));
 }
-/* --- background song: "American Love" — Qing Madi (official YouTube) --- */
-const QING_VIDEO='cypUlwCKq0k';
-let localSong=null;
-fetch('assets/our-song.mp3',{method:'HEAD'}).then(r=>{
-  if(r.ok){localSong=new Audio('assets/our-song.mp3');localSong.loop=true;localSong.volume=.9;localSong.preload='auto';}
-}).catch(()=>{});
-let ytPlayer=null,ytReady=false,ytStarted=false;
-window.onYouTubeIframeAPIReady=function(){
-  ytPlayer=new YT.Player('ytbox',{
-    width:'2',height:'2',
-    host:'https://www.youtube-nocookie.com',
-    videoId:QING_VIDEO,
-    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,autoplay:1,mute:1,iv_load_policy:3,fs:0,disablekb:1},
-    events:{
-      onReady:function(){ytReady=true;try{ytPlayer.mute();ytPlayer.playVideo();}catch(e){}tryYT();},
-      onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)ytStarted=true;}
-    }
-  });
-};
-(function(){const t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';document.head.appendChild(t);})();
-let ytTries=0;
-function tryYT(){
-  if(ytStarted)return;
-  if(ytReady&&ytPlayer&&ytPlayer.playVideo){
-    try{ytPlayer.setVolume(70);ytPlayer.playVideo();}catch(e){}
-  }
-  if(!ytStarted&&ytTries<90){ytTries++;setTimeout(tryYT,800);}
-}
+/* --- background song: "American Love" (acoustic) — Qing Madi — self-hosted, ad-free --- */
+const localSong=new Audio('assets/our-song.mp3');
+localSong.loop=true;localSong.volume=.9;localSong.preload='auto';
 function startSound(){
   if(soundReady)return;soundReady=true;
   initAudio();
   AC.resume().then(()=>{
     master.gain.linearRampToValueAtTime(.9,AC.currentTime+.4);
     breeze();setTimeout(bird,300);setTimeout(rustle,800);
-    tryYT();
   });
 }
 startSound(); /* tries audible autoplay immediately */
@@ -803,25 +776,16 @@ function unlockAll(){
   if(!soundReady&&soundOn)startSound();
   if(!unlocked){
     unlocked=true;
-    if(localSong){
-      try{if(ytPlayer&&ytPlayer.pauseVideo)ytPlayer.pauseVideo();}catch(e){}
-      localSong.currentTime=0;localSong.play().catch(()=>{});
-    }else if(ytPlayer&&ytPlayer.unMute){
-      try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.seekTo(0,true);ytPlayer.playVideo();}catch(e){}
-    }
+    localSong.currentTime=0;localSong.play().catch(()=>{});
     let guard=0;
     const wd=setInterval(()=>{
       guard++;
-      if(!ytPlayer||!ytPlayer.getPlayerState){if(guard>40)clearInterval(wd);return;}
-      let st=-1;try{st=ytPlayer.getPlayerState();}catch(e){}
-      if(st===1){clearInterval(wd);return;}           /* playing: leave it alone */
-      if(st===2||st===5||st===-1||st===0){            /* paused/buffering/ended/cued */
-        try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.playVideo();}catch(e){}
-      }
+      if(!localSong){clearInterval(wd);return;}
+      if(!localSong.paused){clearInterval(wd);return;}
+      localSong.play().catch(()=>{});
       if(guard>120)clearInterval(wd);
     },1200);
   }
-  tryYT();
 }
 ['pointerdown','pointerup','keydown','touchend','touchcancel','wheel'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
 document.getElementById('skyBtn').addEventListener('click',function(){
