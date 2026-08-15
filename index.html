@@ -684,7 +684,6 @@ document.getElementById('kissBtn').addEventListener('click',e=>{
   pop.innerHTML=`<div class="kissring"></div>${KISS_URL?`<img src="${KISS_URL}" alt="kiss">`:'💋'}`;
   document.body.appendChild(pop);
   setTimeout(()=>burst(W()/2,H()/2,28),700);
-  if(navigator.vibrate)navigator.vibrate([90,60,90]);
   setTimeout(()=>pop.remove(),2400);
 });
 
