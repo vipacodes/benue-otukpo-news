@@ -308,7 +308,7 @@
     Every butterfly on this page flies for you, Baby 🦋<br>
     Every flower blooms because of you 🌸<br>
     Made with all my heart, for Gheefted — my Baby 👑💜<br>
-    <span style="font-size:12px;opacity:.75">🎹 “There is Romance” — Kevin MacLeod (incompetech.com) · CC BY 3.0</span>
+    <span style="font-size:12px;opacity:.75">🎤 “Crazy Glue” — Josh Woodward (joshwoodward.com) · CC BY 4.0 &nbsp;·&nbsp; 🎹 “There is Romance” — Kevin MacLeod · CC BY 3.0</span>
   </footer>
 </div>
 
@@ -824,13 +824,14 @@ function rustle(){
   }
   setTimeout(rustle,rnd(4000,9000));
 }
-const SONG_URL='https://incompetech.com/music/royalty-free/mp3-royaltyfree/There%20is%20Romance.mp3';
+const SONG_URL='https://www.joshwoodward.com/mp3/TheWake/JoshWoodward-TheWake-04-CrazyGlue.mp3';
+const PIANO_URL='https://incompetech.com/music/royalty-free/mp3-royaltyfree/There%20is%20Romance.mp3';
 let songEl=null,useSong=false,songTried=false;
 function trySong(){
   if(songTried)return;songTried=true;
   songEl=new Audio();
   songEl.loop=true;songEl.volume=.8;
-  const srcs=['song.mp3','assets/song.mp3',SONG_URL];
+  const srcs=['song.mp3','assets/song.mp3',SONG_URL,PIANO_URL];
   let i=0;
   songEl.addEventListener('error',()=>{i++;if(i<srcs.length){songEl.src=srcs[i];songEl.load();tryPlay();}else songEl=null;});
   songEl.src=srcs[0];
