@@ -34,6 +34,9 @@
   #veil{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(180deg,rgba(8,4,22,.82),rgba(8,4,22,.34) 24%,rgba(8,4,22,.05) 44%,rgba(8,4,22,0) 60%)}
   body.dawn #veil{background:linear-gradient(180deg,rgba(48,16,72,.52),rgba(48,16,72,.14) 26%,rgba(48,16,72,0) 50%)}
+  #swayLayer{position:fixed;left:0;right:0;bottom:0;height:30vh;z-index:4;pointer-events:none}
+  .plant{position:absolute;bottom:-6px;transform-origin:50% 100%;will-change:transform}
+  .plant svg{display:block;width:100%;height:auto}
   .shoot{position:fixed;z-index:2;width:120px;height:2px;border-radius:2px;pointer-events:none;
     background:linear-gradient(90deg,rgba(255,255,255,0),#fff);transform-origin:right center}
 
@@ -236,6 +239,7 @@
 <div id="gardenBG"></div>
 <div id="bgDawn"></div>
 <div id="veil"></div>
+<div id="swayLayer"></div>
 <div id="blooms"></div>
 
 <div id="content">
@@ -376,6 +380,71 @@ setTimeout(shootingStar,3500);
 })();
 
 /* ============================================================
+   LIVING FOREGROUND — flowers & grass swaying in natural wind
+   ============================================================ */
+const PLANTS=[];
+function bladeSVG(h){
+  const w=rnd(4,8),b=rnd(-26,26);
+  const g=`hsl(${rnd(95,140)},${rnd(30,50)}%,${rnd(22,34)}%)`;
+  return `<svg viewBox="-30 -130 60 135"><path d="M0,0 C${(b*.3).toFixed(1)},${(-h*.4).toFixed(1)} ${b.toFixed(1)},${(-h*.85).toFixed(1)} ${(b*1.2).toFixed(1)},${-h} C${b.toFixed(1)},${(-h*.7).toFixed(1)} ${(w+b*.3).toFixed(1)},${(-h*.35).toFixed(1)} ${w.toFixed(1)},0 Z" fill="${g}"/></svg>`;
+}
+function lavSVG(){
+  const hue=rnd(266,286);let buds='';
+  for(let i=0;i<10;i++){const y=-52-i*5,off=(i%2?3:-3)*rnd(.8,1.2);
+    buds+=`<ellipse cx="${off.toFixed(1)}" cy="${y}" rx="3.4" ry="4.6" fill="hsl(${hue},60%,${rnd(52,70).toFixed(0)}%)"/>`;}
+  return `<svg viewBox="-30 -130 60 135">
+   <path d="M0,2 C2,-30 -2,-60 0,-100" stroke="hsl(140,32%,30%)" stroke-width="2.2" fill="none"/>
+   <path d="M0,-14 C-9,-20 -12,-30 -10,-34 C-4,-30 0,-22 0,-18 Z" fill="hsl(145,36%,28%)"/>
+   ${buds}<ellipse cx="0" cy="-104" rx="2.4" ry="3.6" fill="hsl(${hue},55%,74%)"/></svg>`;
+}
+function tulipSVG(){
+  const hue=pick([276,288,300,318]);
+  const c=`hsl(${hue},62%,${rnd(45,60).toFixed(0)}%)`,c2=`hsl(${hue+6},70%,${rnd(55,66).toFixed(0)}%)`;
+  return `<svg viewBox="-30 -130 60 135">
+   <path d="M0,2 C3,-30 -3,-55 0,-84" stroke="hsl(140,34%,28%)" stroke-width="2.6" fill="none"/>
+   <path d="M0,-26 C-10,-32 -13,-42 -11,-46 C-4,-42 0,-34 0,-30 Z" fill="hsl(145,36%,28%)"/>
+   <g transform="translate(0,-84)">
+     <path d="M0,2 C-13,-2 -16,-18 -8,-27 C-4,-17 -1,-7 0,2 Z" fill="${c}"/>
+     <path d="M0,2 C13,-2 16,-18 8,-27 C4,-17 1,-7 0,2 Z" fill="${c}"/>
+     <path d="M0,3 C-7,-5 -7,-22 0,-30 C7,-22 7,-5 0,3 Z" fill="${c2}"/>
+   </g></svg>`;
+}
+function lupSVG(){
+  const hue=rnd(255,275);let dots='';
+  for(let i=0;i<14;i++){const y=-40-i*4.6,r=4.4*(1-i/18);
+    dots+=`<circle cx="${rnd(-1.5,1.5).toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="hsl(${hue},65%,${rnd(50,68).toFixed(0)}%)"/>`;}
+  return `<svg viewBox="-30 -130 60 135">
+   <path d="M0,2 C2,-30 -2,-60 0,-104" stroke="hsl(140,32%,28%)" stroke-width="2.4" fill="none"/>
+   ${dots}</svg>`;
+}
+function windSway(t,p){
+  const g=Math.sin(t*.00045+p.x*.35)*.5+Math.sin(t*.0011+p.phase)*.3+Math.sin(t*.0027+p.phase*2)*.2;
+  const gust=Math.pow(Math.max(0,Math.sin(t*.00023+p.x*.2)),3);
+  return g*1.8+gust*3.2+Math.sin(t*.012+p.phase)*.25;
+}
+(function(){
+  const layer=document.getElementById('swayLayer');
+  const n=Math.max(28,Math.min(64,Math.floor(W()/24)));
+  for(let i=0;i<n;i++){
+    const t=Math.random();
+    let svg,flex,size;
+    if(t<.45){svg=bladeSVG(Math.floor(rnd(50,120)));flex=rnd(.8,1.5);size=rnd(50,120);}
+    else if(t<.7){svg=lavSVG();flex=rnd(.4,.8);size=rnd(70,120);}
+    else if(t<.87){svg=tulipSVG();flex=rnd(.3,.6);size=rnd(70,115);}
+    else{svg=lupSVG();flex=rnd(.4,.75);size=rnd(80,130);}
+    const el=document.createElement('div');
+    el.className='plant';
+    el.style.width=size+'px';
+    el.style.left=rnd(-2,99)+'%';
+    const depth=rnd(.6,1);
+    el.style.opacity=depth.toFixed(2);
+    if(depth<.75)el.style.filter='brightness(.7) blur(.5px)';
+    el.innerHTML=svg;
+    layer.appendChild(el);
+    PLANTS.push({el,flex,phase:rnd(0,6.28),lean:rnd(-2,2),x:parseFloat(el.style.left)});
+  }
+})();
+/* ============================================================
    REAL BUTTERFLIES — photo sprites, keyed transparent,
    lifelike flight: flutter bursts, glides, hovers
    ============================================================ */
@@ -474,6 +543,10 @@ Promise.all(SPRITES.map(keySprite)).then(spr=>{
 let lastT=performance.now();
 function loop(t){
   const dt=Math.min(40,t-lastT)/16.7; lastT=t;
+  for(const p of PLANTS){
+    const a=p.lean+windSway(t,p)*p.flex;
+    p.el.style.transform=`rotate(${a.toFixed(2)}deg)`;
+  }
   for(const b of butterflies){
     if(t>b.mt) setMode(b,t);
     if(t>b.ret||Math.hypot(b.tx-b.x,b.ty-b.y)<34) retarget(b,t);
