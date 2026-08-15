@@ -622,7 +622,7 @@ tick(); setInterval(tick,1000);
 let KISS_URL='';
 keyFlood('assets/kiss.png?v=6').then(u=>KISS_URL=u);
 /* REAL recorded kiss sound (Mixkit, free license) at full volume */
-const KISS_CHAIN=['https://cdn.freesound.org/sounds/207686/207686_3472386-preview.mp3','assets/kiss1.mp3','assets/kiss-sfx.mp3'];
+const KISS_CHAIN=['assets/kiss-yours.mp3','https://cdn.freesound.org/sounds/207686/207686_3472386-preview.mp3','assets/kiss1.mp3','assets/kiss-sfx.mp3'];
 const kissSfx=new Audio(KISS_CHAIN[0]);kissSfx.preload='auto';
 let kissI=0;
 kissSfx.addEventListener('error',()=>{kissI++;if(kissI<KISS_CHAIN.length)kissSfx.src=KISS_CHAIN[kissI];});
