@@ -19,14 +19,20 @@
   }
 
   /* ============ LIVING PHOTO BACKGROUND ============ */
-  #gardenBG{
+  #gardenBG,#bgDawn{
     position:fixed;inset:-4%;z-index:0;pointer-events:none;
-    background:url(assets/garden.jpg) center 78%/cover no-repeat;
+    background:center 78%/cover no-repeat;
     animation:kenburns 38s ease-in-out infinite alternate;transform-origin:50% 85%;
+    transition:opacity 1.8s ease;
   }
+  #gardenBG{background-image:url(assets/garden.jpg)}
+  #bgDawn{background-image:url(assets/garden-dawn.jpg);opacity:0}
+  body.dawn #bgDawn{opacity:1}
+  body.dawn #gardenBG{opacity:0}
   @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07) translateY(-1.2%)}}
   #veil{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(180deg,rgba(8,4,22,.82),rgba(8,4,22,.34) 24%,rgba(8,4,22,.05) 44%,rgba(8,4,22,0) 60%)}
+  body.dawn #veil{background:linear-gradient(180deg,rgba(48,16,72,.52),rgba(48,16,72,.14) 26%,rgba(48,16,72,0) 50%)}
   .shoot{position:fixed;z-index:2;width:120px;height:2px;border-radius:2px;pointer-events:none;
     background:linear-gradient(90deg,rgba(255,255,255,0),#fff);transform-origin:right center}
 
@@ -109,19 +115,18 @@
   .cell span{font-size:clamp(11px,1.7vw,14px);letter-spacing:2px;color:#d5b3ff;text-transform:uppercase}
 
   /* letter */
-  .letter{
-    position:relative;text-align:left;border-radius:22px;padding:clamp(26px,5vw,48px);
-    background:linear-gradient(160deg,rgba(255,250,255,.97),rgba(240,228,255,.94));
-    color:#3c2160;box-shadow:0 20px 60px rgba(10,0,25,.6),0 0 0 1px rgba(255,255,255,.5) inset;
-    font-size:clamp(16px,2.4vw,19px);line-height:1.85}
-  .letter::before{
-    content:'';position:absolute;inset:-3px;z-index:-1;border-radius:25px;
-    background:linear-gradient(120deg,#b06ef0,#ff8fd6,#8f5cf7,#d3a4ff,#b06ef0);background-size:300% 300%;
-    animation:borderFlow 7s ease infinite}
-  @keyframes borderFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-  .letter h3{font-size:clamp(22px,3.6vw,30px);margin-bottom:18px;color:#5b2d91;text-align:center}
-  .letter p{margin-bottom:1.25em}
-  .letter .sig{font-style:italic;text-align:right;color:#6a35a8}
+  .letter{position:relative;text-align:left;font-size:clamp(16px,2.4vw,19px);line-height:1.8;color:#f6ecff}
+  .letter h3,.letter p{
+    background:rgba(20,8,42,.44);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border:1px solid rgba(235,205,255,.3);
+    border-radius:18px;
+    box-shadow:0 10px 34px rgba(10,0,30,.35),inset 0 0 22px rgba(190,120,255,.12);
+    text-shadow:0 1px 10px rgba(12,2,30,.75);
+  }
+  .letter h3{font-size:clamp(22px,3.6vw,30px);margin-bottom:20px;padding:20px 18px;color:#ffe1f7;text-align:center}
+  .letter p{margin-bottom:18px;padding:clamp(18px,3.4vw,28px)}
+  .letter .sig{text-align:right;color:#ffd9f4}
   .em{display:inline-block;font-style:normal}
   .em.beat{animation:beat 1.6s ease-in-out infinite}
   .em.floaty{animation:floaty 2.6s ease-in-out infinite}
@@ -154,11 +159,17 @@
     font-size:22px;color:#fff;box-shadow:0 6px 20px rgba(10,0,30,.55);transition:transform .15s}
   #musicBtn:active{transform:scale(.9)}
   #musicBtn.on{background:rgba(150,70,230,.75);animation:softPulse 2s ease-in-out infinite}
+  #skyBtn{
+    position:fixed;top:16px;left:16px;z-index:30;width:52px;height:52px;border-radius:50%;cursor:pointer;
+    border:1px solid rgba(220,180,255,.5);background:rgba(30,10,55,.55);backdrop-filter:blur(8px);
+    font-size:22px;color:#fff;box-shadow:0 6px 20px rgba(10,0,30,.55);transition:transform .15s}
+  #skyBtn:active{transform:scale(.9)}
 </style>
 </head>
-<body>
+<body class="dawn">
 
 <div id="gardenBG"></div>
+<div id="bgDawn"></div>
 <div id="veil"></div>
 <div id="blooms"></div>
 
@@ -227,6 +238,7 @@
 </div>
 
 <div id="hint">✨ Touch the garden — magic blooms &amp; butterflies come to you ✨</div>
+<button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <button id="musicBtn" title="Play dreamy music">🎵</button>
 
 <script>
@@ -240,8 +252,9 @@ const rnd  = (a,b)=>a+Math.random()*(b-a);
 const pick = arr=>arr[Math.floor(Math.random()*arr.length)];
 const W = ()=>window.innerWidth, H = ()=>window.innerHeight;
 
-/* ---------- shooting stars ---------- */
+/* ---------- shooting stars (night sky only) ---------- */
 function shootingStar(){
+  if(document.body.classList.contains('dawn')){ setTimeout(shootingStar,rnd(6000,12000)); return; }
   const s=document.createElement('div');
   s.className='shoot';
   const x=rnd(W()*.15,W()*.9), y=rnd(H()*.04,H()*.3), ang=rnd(15,35);
@@ -545,6 +558,14 @@ function startMusic(){
   }
   playChord(); setTimeout(pluck,1200);
 }
+/* ---------- sunrise / night toggle ---------- */
+document.getElementById('skyBtn').addEventListener('click',function(){
+  const dawn=document.body.classList.toggle('dawn');
+  this.textContent=dawn?'🌙':'🌅';
+  this.title=dawn?'Switch to night':'Switch to sunrise';
+  burst(W()/2,90,10);
+});
+
 document.getElementById('musicBtn').addEventListener('click',function(){
   musicOn=!musicOn;
   this.classList.toggle('on',musicOn);
