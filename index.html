@@ -462,7 +462,7 @@ function retarget(b,t){
 }
 Promise.all(SPRITES.map(keySprite)).then(spr=>{
   SPR=spr;
-  SPR_POOL=spr;
+  SPR_POOL=[spr[0],spr[0],spr[0],spr[0],spr[1],spr[1],spr[6],spr[6],spr[2],spr[3],spr[4],spr[5]];
   const n=Math.max(6,Math.min(10,Math.floor(W()/170)));
   for(let i=0;i<n;i++) makeButterfly(rnd(W()*.1,W()*.9),rnd(H()*.1,H()*.6));
   requestAnimationFrame(loop);
@@ -823,7 +823,7 @@ function unlockAll(){
   }
   tryYT();
 }
-['pointerdown','keydown','touchend'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
+['pointerdown','pointerup','keydown','touchend','touchcancel'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
 document.getElementById('sndBtn').addEventListener('click',function(){
   unlockAll();this.style.display='none';
 });
