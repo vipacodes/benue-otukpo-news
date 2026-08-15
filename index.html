@@ -748,7 +748,7 @@ window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('ytbox',{
     width:'2',height:'2',
     videoId:QING_VIDEO,
-    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,start:15},
+    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1},
     events:{
       onReady:function(){ytReady=true;tryYT();},
       onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)ytStarted=true;}
@@ -774,10 +774,12 @@ function startSound(){
   });
 }
 startSound(); /* tries immediately; browsers unlock it on her first tap */
-window.addEventListener('pointerdown',()=>{
-  if(soundOn&&!soundReady)startSound();
-  else if(AC&&AC.state==='suspended')AC.resume();
-  tryYT();
+['pointerdown','keydown','touchend','wheel','scroll','pointermove'].forEach(ev=>{
+  window.addEventListener(ev,()=>{
+    if(soundOn&&!soundReady)startSound();
+    else if(AC&&AC.state==='suspended')AC.resume();
+    tryYT();
+  },{passive:true});
 });
 document.getElementById('skyBtn').addEventListener('click',function(){
   const dawn=document.body.classList.toggle('dawn');
