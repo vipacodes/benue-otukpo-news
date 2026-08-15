@@ -609,6 +609,11 @@ tick(); setInterval(tick,1000);
 /* ---------- kiss button: kiss sound + BIG kiss pop ---------- */
 let KISS_URL='';
 keyFlood('assets/kiss.png?v=6').then(u=>KISS_URL=u);
+/* REAL recorded kiss sound (Mixkit, free license) at full volume */
+const kissSfx=new Audio('assets/kiss-sfx.mp3');kissSfx.preload='auto';
+function duckMusic(down){
+  if(ytPlayer&&ytPlayer.setVolume){try{ytPlayer.setVolume(down?12:70);}catch(e){}}
+}
 /* realistic kiss: smack + lip-part suction + low "mwah" formants */
 function kissSound(){
   if(!AC||!soundOn)return;
@@ -659,7 +664,9 @@ function kissSound(){
   o.start(t3);o.stop(t3+.4);
 }
 document.getElementById('kissBtn').addEventListener('click',e=>{
-  kissSound();
+  const k=kissSfx.cloneNode();k.volume=1;
+  k.play().catch(()=>kissSound());
+  duckMusic(true);setTimeout(()=>duckMusic(false),2000);
   const pop=document.createElement('div');
   pop.className='kisspop';
   pop.innerHTML=`<div class="kissring"></div>${KISS_URL?`<img src="${KISS_URL}" alt="kiss">`:'💋'}`;
