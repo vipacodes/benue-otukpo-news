@@ -26,8 +26,8 @@
     transition:opacity 1.8s ease;
     filter:saturate(1.06) contrast(1.05);
   }
-  #gardenBG{background-image:url(assets/garden.jpg)}
-  #bgDawn{background-image:url(assets/garden-dawn.jpg);opacity:0}
+  #gardenBG{background-image:url(assets/garden.jpg?v=3)}
+  #bgDawn{background-image:url(assets/garden-dawn.jpg?v=3);opacity:0}
   body.dawn #bgDawn{opacity:1}
   body.dawn #gardenBG{opacity:0}
   @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.035) translateY(-.6%)}}
@@ -104,12 +104,13 @@
   .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
   .forline{font-size:clamp(14px,2vw,17px);letter-spacing:4px;color:#e3ccff;text-transform:uppercase;margin-bottom:14px;
     text-shadow:0 2px 18px rgba(20,5,45,.9)}
-  .crown{position:relative;animation:crownBounce 2.6s ease-in-out infinite;
-    filter:drop-shadow(0 0 12px rgba(255,214,120,.55)) drop-shadow(0 0 28px rgba(170,90,255,.5))}
-  .crown img{width:clamp(110px,20vw,170px);display:block}
+  .crown{position:relative;animation:crownGlow 3s ease-in-out infinite alternate}
+  @keyframes crownGlow{from{filter:drop-shadow(0 0 10px rgba(255,214,120,.45)) drop-shadow(0 0 24px rgba(170,90,255,.4))}
+    to{filter:drop-shadow(0 0 20px rgba(255,226,150,.85)) drop-shadow(0 0 44px rgba(190,110,255,.75))}}
+  .crown img{width:clamp(150px,26vw,230px);display:block}
   .cglint{position:absolute;width:16px;height:16px;background:#fff;opacity:0;
     clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);
-    animation:glint 2.6s ease-in-out infinite;animation-delay:var(--gd)}
+    animation:glint 1.8s ease-in-out infinite;animation-delay:var(--gd)}
   @keyframes glint{0%,100%{opacity:0;transform:scale(.2) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(90deg)}}
   @keyframes crownBounce{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
   h1{
@@ -211,6 +212,17 @@
     border:1px solid rgba(220,180,255,.5);background:rgba(30,10,55,.55);backdrop-filter:blur(8px);
     font-size:22px;color:#fff;box-shadow:0 6px 20px rgba(10,0,30,.55);transition:transform .15s}
   #skyBtn:active{transform:scale(.9)}
+  #songBtn{
+    position:fixed;top:76px;right:16px;z-index:30;width:52px;height:52px;border-radius:50%;cursor:pointer;
+    border:1px solid rgba(220,180,255,.5);background:rgba(30,10,55,.55);backdrop-filter:blur(8px);
+    font-size:22px;color:#fff;box-shadow:0 6px 20px rgba(10,0,30,.55);transition:transform .15s}
+  #songBtn:active{transform:scale(.9)}
+  .vmodal{position:fixed;inset:0;z-index:70;background:rgba(10,2,20,.88);backdrop-filter:blur(6px);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:16px}
+  .vmodal iframe{width:min(94vw,680px);aspect-ratio:16/9;border:0;border-radius:16px;
+    box-shadow:0 20px 70px rgba(0,0,0,.7),0 0 40px rgba(160,80,255,.35)}
+  .vclose{border:1px solid rgba(220,180,255,.5);background:rgba(40,15,70,.7);color:#fff;cursor:pointer;
+    font-family:inherit;font-size:15px;padding:10px 26px;border-radius:999px}
 </style>
 </head>
 <body class="dawn">
@@ -308,13 +320,14 @@
     Every butterfly on this page flies for you, Baby 🦋<br>
     Every flower blooms because of you 🌸<br>
     Made with all my heart, for Gheefted — my Baby 👑💜<br>
-    <span style="font-size:12px;opacity:.75">🎤 “Crazy Glue” — Josh Woodward (joshwoodward.com) · CC BY 4.0 &nbsp;·&nbsp; 🎹 “There is Romance” — Kevin MacLeod · CC BY 3.0</span>
+    <span style="font-size:12px;opacity:.75">🎧 “American Love” — Qing Madi via the 🎧 button &nbsp;·&nbsp; 🎹 “There is Romance” — Kevin MacLeod · CC BY 3.0</span>
   </footer>
 </div>
 
 <div id="hint">✨ Touch anywhere — music wakes, flowers bloom &amp; butterflies come to you ✨</div>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
+<button id="songBtn" title="Our song — Qing Madi">🎧</button>
 <button id="musicBtn" title="Play dreamy music">🎵</button>
 
 <script>
@@ -414,7 +427,7 @@ function keyFlood(src){
     im.src=src;
   });
 }
-keyFlood('assets/crown.png').then(u=>{document.getElementById('crownImg').src=u;});
+keyFlood('assets/crown.png?v=3').then(u=>{document.getElementById('crownImg').src=u;});
 const butterflies=[];
 const MAX_B=14;
 let SPR=[];
@@ -635,7 +648,7 @@ tick(); setInterval(tick,1000);
 
 /* ---------- kiss button: kiss sound + BIG kiss pop ---------- */
 let KISS_URL='';
-keyFlood('assets/kiss.png').then(u=>KISS_URL=u);
+keyFlood('assets/kiss.png?v=3').then(u=>KISS_URL=u);
 /* realistic kiss: smack + lip-part suction + low "mwah" formants */
 function kissSound(){
   if(!AC||!soundOn)return;
@@ -823,14 +836,13 @@ function rustle(){
   }
   setTimeout(rustle,rnd(4000,9000));
 }
-const SONG_URL='https://www.joshwoodward.com/mp3/TheWake/JoshWoodward-TheWake-04-CrazyGlue.mp3';
 const PIANO_URL='https://incompetech.com/music/royalty-free/mp3-royaltyfree/There%20is%20Romance.mp3';
 let songEl=null,useSong=false,songTried=false;
 function trySong(){
   if(songTried)return;songTried=true;
   songEl=new Audio();
   songEl.loop=true;songEl.volume=.8;
-  const srcs=['song.mp3','assets/song.mp3',SONG_URL,PIANO_URL];
+  const srcs=['song.mp3','assets/song.mp3',PIANO_URL];
   let i=0;
   songEl.addEventListener('error',()=>{i++;if(i<srcs.length){songEl.src=srcs[i];songEl.load();tryPlay();}else songEl=null;});
   songEl.src=srcs[0];
@@ -858,6 +870,22 @@ window.addEventListener('pointerdown',()=>{
   if(soundOn&&!soundReady)startSound();
   else if(AC&&AC.state==='suspended')AC.resume();
   if(soundOn)tryPlay();
+});
+document.getElementById('skyBtn').addEventListener('click',function(){
+  const dawn=document.body.classList.toggle('dawn');
+  this.textContent=dawn?'\u{1F319}':'\u{1F305}';
+  this.title=dawn?'Switch to night':'Switch to sunrise';
+  burst(W()/2,90,10);
+});
+/* our song: Qing Madi — official video, plays on tap */
+const QING_VIDEO='-UBNfYYnCnE';
+document.getElementById('songBtn').addEventListener('click',()=>{
+  const m=document.createElement('div');
+  m.className='vmodal';
+  m.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${QING_VIDEO}?autoplay=1&rel=0" title="Qing Madi - American Love" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><button class="vclose">Close ✕</button>`;
+  m.querySelector('.vclose').addEventListener('click',()=>m.remove());
+  m.addEventListener('click',e=>{if(e.target===m)m.remove();});
+  document.body.appendChild(m);
 });
 document.getElementById('musicBtn').addEventListener('click',function(){
   soundOn=!soundOn;
