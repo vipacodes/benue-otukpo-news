@@ -21,6 +21,18 @@ Just open `index.html` in any browser (double-click it). No installs needed.
 3. In the repo: **Settings → Pages → Source: Deploy from a branch → main / (root) → Save**.
 4. In ~1 minute her page is live at `https://YOUR_USERNAME.github.io/for-my-princess/`
 
+## Add her photo or video to the heart frame 💜
+1. Save her **photo** as `assets/her.jpg`  —  or her **video** as `assets/her.mp4`
+   (video plays automatically, muted, on loop; if both exist, the video wins).
+2. Push it:
+   ```bash
+   git add assets/her.jpg
+   git commit -m "My Baby in the heart frame 💜"
+   git push
+   ```
+3. Done — the heart frame shows it automatically. Until then it shows a
+   beating 💜.
+
 ## Personalize
 - **Start date** (for the live counter): open `index.html`, find
   `const ANNIVERSARY = new Date('2024-08-15T00:00:00');` near the top of the

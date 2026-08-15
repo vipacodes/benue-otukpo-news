@@ -139,6 +139,26 @@
   .cell b{display:block;font-size:clamp(26px,5vw,44px);color:#fff;font-variant-numeric:tabular-nums}
   .cell span{font-size:clamp(11px,1.7vw,14px);letter-spacing:2px;color:#d5b3ff;text-transform:uppercase}
 
+  /* heart frame for her photo / video */
+  .heartwrap{position:relative;width:min(72vw,330px);margin:0 auto;padding-top:8px}
+  .heartborder{position:absolute;left:0;right:0;top:8px;bottom:34px;
+    background:linear-gradient(120deg,#ffd88a,#b06ef0,#ff8fd6,#ffd88a);background-size:300% 300%;
+    clip-path:url(#heartClip);animation:borderFlow 6s ease infinite;
+    filter:drop-shadow(0 0 18px rgba(200,120,255,.55))}
+  .heartframe{position:absolute;left:2%;right:2%;top:calc(8px + 2%);bottom:calc(34px + 2%);
+    clip-path:url(#heartClip);overflow:hidden;background:rgba(25,8,48,.55)}
+  .heartframe img,.heartframe video{width:100%;height:100%;object-fit:cover;display:block}
+  .heartfallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 38%,rgba(150,80,220,.5),rgba(30,10,55,.7))}
+  .heartcap{margin-top:10px;font-style:italic;color:#ffe1f7;font-size:clamp(16px,2.6vw,20px);
+    text-shadow:0 2px 12px rgba(15,3,35,.85)}
+
+  /* sky tip bubble */
+  #skyTip{position:fixed;top:76px;left:16px;z-index:29;max-width:200px;pointer-events:none;
+    padding:9px 14px;border-radius:14px;background:rgba(20,7,40,.72);border:1px solid rgba(210,170,255,.4);
+    backdrop-filter:blur(6px);font-size:13px;color:#ecd9ff;font-style:italic;
+    transition:opacity 1.4s;box-shadow:0 6px 18px rgba(10,0,30,.5)}
+
   /* letter */
   .letter{position:relative;text-align:left;font-size:clamp(16px,2.4vw,19px);line-height:1.8;color:#f6ecff}
   .letter h3,.letter p{
@@ -192,6 +212,12 @@
 </style>
 </head>
 <body class="dawn">
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+    <path d="M0.5,0.92 C0.22,0.68 0.0,0.47 0.0,0.29 C0.0,0.11 0.14,0.0 0.29,0.0 C0.39,0.0 0.47,0.05 0.5,0.14 C0.53,0.05 0.61,0.0 0.71,0.0 C0.86,0.0 1.0,0.11 1.0,0.29 C1.0,0.47 0.78,0.68 0.5,0.92 Z"/>
+  </clipPath>
+</defs></svg>
 
 <div id="gardenBG"></div>
 <div id="bgDawn"></div>
@@ -248,6 +274,19 @@
   </section>
 
   <section>
+    <h2 class="reveal"><span class="em floaty">🌸</span> The most beautiful flower in my garden <span class="em floaty">🌸</span></h2>
+    <div class="heartwrap reveal">
+      <div class="heartborder"></div>
+      <div class="heartframe">
+        <video id="herVid" src="assets/her.mp4" autoplay loop muted playsinline></video>
+        <img id="herImg" src="assets/her.jpg" alt="My Baby">
+        <div class="heartfallback"><span class="em beat" style="font-size:70px">💜</span></div>
+      </div>
+      <div class="heartcap">My Baby 💜</div>
+    </div>
+  </section>
+
+  <section>
     <h2 class="reveal"><span class="em floaty">💌</span> A letter, from my heart to yours <span class="em floaty">💌</span></h2>
     <div class="letter">
       <h3 class="reveal">To my dearie… <span class="em beat">💜</span></h3>
@@ -293,6 +332,7 @@
 
 <div id="hint">✨ Touch anywhere — music wakes, flowers bloom &amp; butterflies come to you ✨</div>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
+<div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
 <button id="musicBtn" title="Play dreamy music">🎵</button>
 
 <script>
@@ -547,6 +587,19 @@ const io=new IntersectionObserver(es=>{
   }
 },{threshold:.25});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- her photo / video in the heart frame ---------- */
+(function(){
+  const img=document.getElementById('herImg'),
+        vid=document.getElementById('herVid'),
+        fb=document.querySelector('.heartfallback');
+  vid.addEventListener('error',()=>vid.remove());
+  img.addEventListener('error',()=>img.remove());
+  vid.addEventListener('loadeddata',()=>{fb.style.display='none';if(img.parentNode)img.remove();});
+  img.addEventListener('load',()=>{fb.style.display='none';if(vid.parentNode)vid.remove();});
+})();
+/* ---------- sky tip fades after a while ---------- */
+setTimeout(()=>{document.getElementById('skyTip').style.opacity=0;},9000);
 
 /* ---------- together counter ---------- */
 function tick(){
