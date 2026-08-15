@@ -26,8 +26,8 @@
     transition:opacity 1.8s ease;
     filter:saturate(1.06) contrast(1.05);
   }
-  #gardenBG{background-image:url(assets/garden.jpg?v=5)}
-  #bgDawn{background-image:url(assets/garden-dawn.jpg?v=5);opacity:0}
+  #gardenBG{background-image:url(assets/garden.jpg?v=6)}
+  #bgDawn{background-image:url(assets/garden-dawn.jpg?v=6);opacity:0}
   body.dawn #bgDawn{opacity:1}
   body.dawn #gardenBG{opacity:0}
   @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.035) translateY(-.6%)}}
@@ -77,27 +77,29 @@
   /* ============ FLOATING FX ============ */
   .fx{position:fixed;left:0;top:0;z-index:9;pointer-events:none;line-height:1}
 
-  /* ============ BIG KISS POP ============ */
-  .kisspop{position:fixed;z-index:40;pointer-events:none;transform:translate(-50%,-50%)}
-  .kisspop img{width:clamp(130px,30vw,200px);display:block;
-    animation:stamp 1.6s cubic-bezier(.2,1.4,.4,1) forwards;
-    filter:drop-shadow(0 4px 16px rgba(255,60,120,.5))}
-  @keyframes stamp{0%{transform:scale(2.1) rotate(-30deg);opacity:0}
-    22%{transform:scale(.92) rotate(-9deg);opacity:1}
-    34%{transform:scale(1.06) rotate(-11deg)}
-    70%{transform:scale(1.02) rotate(-10deg);opacity:1}
-    100%{transform:scale(1.1) rotate(-10deg);opacity:0}}
-  .kissring{position:absolute;left:50%;top:50%;width:160px;height:160px;margin:-80px 0 0 -80px;
-    border:4px solid rgba(255,140,210,.85);border-radius:50%;animation:ringx 1.1s ease-out forwards}
-  @keyframes ringx{from{transform:scale(.2);opacity:1}to{transform:scale(2.4);opacity:0}}
-  .mwah{position:absolute;left:50%;top:-52px;font-size:clamp(26px,5vw,36px);font-weight:bold;color:#ffd7ec;
-    text-shadow:0 0 16px rgba(255,120,200,.9),0 2px 6px rgba(80,0,40,.6);
-    animation:mwahUp 1.5s ease-out forwards}
-  @keyframes mwahUp{0%{opacity:0;transform:translate(-50%,14px) scale(.5)}
-    30%{opacity:1;transform:translate(-50%,0) scale(1.15)}
-    100%{opacity:0;transform:translate(-50%,-44px) scale(1)}}
-
-  /* ============ SCROLL MAGIC REVEAL ============ */
+  /* ============ FULL-SCREEN KISS ============ */
+  .kisspop{position:fixed;inset:0;z-index:60;pointer-events:none;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 45%,rgba(60,8,40,.35),rgba(15,2,18,.8));
+    backdrop-filter:blur(4px);
+    animation:kissVeil 2.3s ease forwards}
+  @keyframes kissVeil{0%{opacity:0}12%{opacity:1}78%{opacity:1}100%{opacity:0}}
+  .kisspop img{width:min(88vmin,660px);
+    animation:kissApproach 2.3s cubic-bezier(.3,.9,.35,1) forwards;
+    filter:drop-shadow(0 10px 40px rgba(255,60,140,.55))}
+  @keyframes kissApproach{
+    0%{transform:scale(.12) rotate(-24deg);opacity:0}
+    10%{opacity:1}
+    46%{transform:scale(.95) rotate(-8deg)}
+    54%{transform:scale(1.06) rotate(-9deg)}
+    60%{transform:scale(.97) rotate(-8deg)}
+    80%{transform:scale(1) rotate(-8deg);opacity:1}
+    100%{transform:scale(1.12) rotate(-8deg);opacity:0}}
+  .kissring{position:absolute;left:50%;top:50%;width:60vmin;height:60vmin;
+    margin:-30vmin 0 0 -30vmin;border:5px solid rgba(255,140,210,.9);border-radius:50%;
+    animation:ringx 1.2s ease-out .9s backwards forwards}
+  @keyframes ringx{from{transform:scale(.2);opacity:1}to{transform:scale(2.2);opacity:0}}
+/* ============ SCROLL MAGIC REVEAL ============ */
   .reveal{opacity:0;transform:translateY(42px) scale(.97);filter:blur(9px);
     transition:opacity 1.1s ease,transform 1.1s cubic-bezier(.2,.8,.3,1),filter 1.1s ease}
   .reveal.on{opacity:1;transform:none;filter:none}
@@ -482,7 +484,7 @@ function keyFlood(src){
     im.src=src;
   });
 }
-keyFlood('assets/crown.png?v=5').then(u=>{document.getElementById('crownImg').src=u;});
+keyFlood('assets/crown.png?v=6').then(u=>{document.getElementById('crownImg').src=u;});
 const butterflies=[];
 const MAX_B=14;
 let SPR=[];
@@ -707,11 +709,19 @@ tick(); setInterval(tick,1000);
 
 /* ---------- kiss button: kiss sound + BIG kiss pop ---------- */
 let KISS_URL='';
-keyFlood('assets/kiss.png?v=5').then(u=>KISS_URL=u);
+keyFlood('assets/kiss.png?v=6').then(u=>KISS_URL=u);
 /* realistic kiss: smack + lip-part suction + low "mwah" formants */
 function kissSound(){
   if(!AC||!soundOn)return;
   const t=AC.currentTime;
+  const br=AC.createBufferSource();br.buffer=noiseBuf();
+  const lpf=AC.createBiquadFilter();lpf.type='lowpass';lpf.frequency.value=900;
+  const gb=AC.createGain();
+  gb.gain.setValueAtTime(0,t);
+  gb.gain.linearRampToValueAtTime(.06,t+.18);
+  gb.gain.linearRampToValueAtTime(0,t+.5);
+  br.connect(lpf);lpf.connect(gb);gb.connect(bus);
+  br.start(t);br.stop(t+.55);
   const n1=AC.createBufferSource();n1.buffer=noiseBuf();
   const bp1=AC.createBiquadFilter();bp1.type='bandpass';bp1.frequency.setValueAtTime(2400,t);bp1.Q.value=1.2;
   const g1=AC.createGain();
@@ -840,15 +850,20 @@ window.onYouTubeIframeAPIReady=function(){
     width:'2',height:'2',
     videoId:QING_VIDEO,
     playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1},
-    events:{onReady:function(){ytReady=true;tryYT();}}
+    events:{
+      onReady:function(){ytReady=true;tryYT();},
+      onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)ytStarted=true;}
+    }
   });
 };
 (function(){const t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';document.head.appendChild(t);})();
+let ytTries=0;
 function tryYT(){
-  if(ytReady&&!ytStarted&&ytPlayer&&ytPlayer.playVideo){
-    ytStarted=true;
+  if(ytStarted)return;
+  if(ytReady&&ytPlayer&&ytPlayer.playVideo){
     try{ytPlayer.setVolume(70);ytPlayer.playVideo();}catch(e){}
   }
+  if(!ytStarted&&ytTries<45){ytTries++;setTimeout(tryYT,2000);}
 }
 function startSound(){
   if(soundReady)return;soundReady=true;
