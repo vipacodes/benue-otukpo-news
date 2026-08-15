@@ -315,7 +315,7 @@
   </footer>
 </div>
 
-<div id="hint">✨ Touch anywhere — butterflies take flight &amp; the garden sings ✨</div>
+<div id="hint">🔊 Tap the screen for sound 🦋</div>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
 
@@ -776,6 +776,7 @@ function unlockAll(){
   if(!soundReady&&soundOn)startSound();
   if(!unlocked){
     unlocked=true;
+    const h=document.getElementById('hint');if(h)h.style.opacity=0;
     localSong.currentTime=0;localSong.play().catch(()=>{});
     let guard=0;
     const wd=setInterval(()=>{
