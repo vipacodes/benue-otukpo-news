@@ -73,6 +73,26 @@
   /* ============ FLOATING FX ============ */
   .fx{position:fixed;left:0;top:0;z-index:9;pointer-events:none;line-height:1}
 
+  /* ============ BIG KISS POP ============ */
+  .kisspop{position:fixed;z-index:40;pointer-events:none;transform:translate(-50%,-50%)}
+  .kisspop svg{width:clamp(120px,28vw,180px);display:block;
+    animation:kissScale 1.5s cubic-bezier(.3,1.5,.45,1) forwards;
+    filter:drop-shadow(0 6px 22px rgba(255,80,160,.6))}
+  @keyframes kissScale{0%{transform:scale(0) rotate(-18deg);opacity:0}
+    35%{transform:scale(1.3) rotate(6deg);opacity:1}
+    55%{transform:scale(.95) rotate(-2deg)}
+    75%{transform:scale(1.08)}
+    100%{transform:scale(1.12);opacity:0}}
+  .kissring{position:absolute;left:50%;top:50%;width:160px;height:160px;margin:-80px 0 0 -80px;
+    border:4px solid rgba(255,140,210,.85);border-radius:50%;animation:ringx 1.1s ease-out forwards}
+  @keyframes ringx{from{transform:scale(.2);opacity:1}to{transform:scale(2.4);opacity:0}}
+  .mwah{position:absolute;left:50%;top:-52px;font-size:clamp(26px,5vw,36px);font-weight:bold;color:#ffd7ec;
+    text-shadow:0 0 16px rgba(255,120,200,.9),0 2px 6px rgba(80,0,40,.6);
+    animation:mwahUp 1.5s ease-out forwards}
+  @keyframes mwahUp{0%{opacity:0;transform:translate(-50%,14px) scale(.5)}
+    30%{opacity:1;transform:translate(-50%,0) scale(1.15)}
+    100%{opacity:0;transform:translate(-50%,-44px) scale(1)}}
+
   /* ============ SCROLL MAGIC REVEAL ============ */
   .reveal{opacity:0;transform:translateY(42px) scale(.97);filter:blur(9px);
     transition:opacity 1.1s ease,transform 1.1s cubic-bezier(.2,.8,.3,1),filter 1.1s ease}
@@ -83,7 +103,12 @@
   .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
   .forline{font-size:clamp(14px,2vw,17px);letter-spacing:4px;color:#e3ccff;text-transform:uppercase;margin-bottom:14px;
     text-shadow:0 2px 18px rgba(20,5,45,.9)}
-  .crown{font-size:clamp(34px,6vw,54px);animation:crownBounce 2.4s ease-in-out infinite;filter:drop-shadow(0 4px 12px rgba(20,5,45,.7))}
+  .crown{animation:crownBounce 2.6s ease-in-out infinite;
+    filter:drop-shadow(0 0 12px rgba(255,214,120,.5)) drop-shadow(0 0 26px rgba(170,90,255,.45))}
+  .crown svg{width:clamp(100px,18vw,150px);display:block}
+  .glint{transform-box:fill-box;transform-origin:center;opacity:0;
+    animation:glint 2.6s ease-in-out infinite;animation-delay:var(--gd)}
+  @keyframes glint{0%,100%{opacity:0;transform:scale(.25) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(90deg)}}
   @keyframes crownBounce{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
   h1{
     font-size:clamp(40px,7.6vw,76px);font-weight:700;letter-spacing:1px;margin:10px 0 6px;
@@ -176,7 +201,36 @@
 <div id="content">
   <div class="hero">
     <div class="forline">✦ for Gheefted ✦</div>
-    <div class="crown">👑</div>
+    <div class="crown">
+      <svg viewBox="0 0 140 96" aria-label="crown">
+        <defs>
+          <linearGradient id="goldg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffefad"/><stop offset=".45" stop-color="#f6bc42"/><stop offset="1" stop-color="#b97c14"/>
+          </linearGradient>
+          <radialGradient id="amethg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#f0dcff"/><stop offset=".4" stop-color="#a05cf5"/><stop offset="1" stop-color="#43108a"/></radialGradient>
+          <radialGradient id="emerg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#dcffe9"/><stop offset=".4" stop-color="#37d183"/><stop offset="1" stop-color="#0a5c36"/></radialGradient>
+          <radialGradient id="saphg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#e0efff"/><stop offset=".4" stop-color="#4f8ae0"/><stop offset="1" stop-color="#123a7a"/></radialGradient>
+          <radialGradient id="roseg" cx=".35" cy=".3" r="1"><stop offset="0" stop-color="#ffe3ee"/><stop offset=".4" stop-color="#ef5fa4"/><stop offset="1" stop-color="#8a1650"/></radialGradient>
+        </defs>
+        <path d="M16,66 L24,26 L44,46 L70,12 L96,46 L116,26 L124,66 Z" fill="url(#goldg)" stroke="#8a5a10" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="24" cy="24" r="5" fill="url(#goldg)" stroke="#8a5a10" stroke-width="1.5"/>
+        <circle cx="70" cy="10" r="6" fill="url(#goldg)" stroke="#8a5a10" stroke-width="1.5"/>
+        <circle cx="116" cy="24" r="5" fill="url(#goldg)" stroke="#8a5a10" stroke-width="1.5"/>
+        <rect x="14" y="64" width="112" height="18" rx="9" fill="url(#goldg)" stroke="#8a5a10" stroke-width="2"/>
+        <ellipse cx="70" cy="73" rx="9" ry="8" fill="url(#amethg)" stroke="#5a1e9e" stroke-width="1.5"/>
+        <ellipse cx="44" cy="73" rx="6.5" ry="6" fill="url(#emerg)" stroke="#0d5c33" stroke-width="1.3"/>
+        <ellipse cx="96" cy="73" rx="6.5" ry="6" fill="url(#saphg)" stroke="#16407e" stroke-width="1.3"/>
+        <circle cx="27" cy="73" r="4.2" fill="url(#roseg)" stroke="#8a1650"/>
+        <circle cx="113" cy="73" r="4.2" fill="url(#emerg)" stroke="#0d5c33"/>
+        <circle cx="70" cy="36" r="7" fill="url(#amethg)" stroke="#5a1e9e" stroke-width="1.5"/>
+        <circle cx="40" cy="48" r="4" fill="url(#saphg)" stroke="#16407e"/>
+        <circle cx="100" cy="48" r="4" fill="url(#roseg)" stroke="#8a1650"/>
+        <g transform="translate(70,33)"><path class="glint" style="--gd:0s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
+        <g transform="translate(45,71) scale(.7)"><path class="glint" style="--gd:.9s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
+        <g transform="translate(97,71) scale(.7)"><path class="glint" style="--gd:1.7s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
+        <g transform="translate(70,71) scale(.8)"><path class="glint" style="--gd:2.3s" d="M0,-9 L2.2,-2.2 9,0 2.2,2.2 0,9 -2.2,2.2 -9,0 -2.2,-2.2 Z" fill="#fff"/></g>
+      </svg>
+    </div>
     <h1>Happy 2 Years,<br>Baby</h1>
     <p class="sub">A garden of purple, grown from two years of us 🦋</p>
     <div class="years">💜 &nbsp;TWO YEARS OF US&nbsp; 💜</div>
@@ -237,7 +291,7 @@
   </footer>
 </div>
 
-<div id="hint">✨ Touch the garden — magic blooms &amp; butterflies come to you ✨</div>
+<div id="hint">✨ Touch anywhere — music wakes, flowers bloom &amp; butterflies come to you ✨</div>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <button id="musicBtn" title="Play dreamy music">🎵</button>
 
@@ -504,76 +558,188 @@ function tick(){
 }
 tick(); setInterval(tick,1000);
 
-/* ---------- kiss button ---------- */
+/* ---------- kiss button: kiss sound + BIG kiss pop ---------- */
+const LIPS=`<svg viewBox="0 0 100 60">
+  <defs><linearGradient id="lipg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ff7fae"/><stop offset=".55" stop-color="#f23d7f"/><stop offset="1" stop-color="#c01e5f"/>
+  </linearGradient></defs>
+  <path d="M8,30 C18,13 34,9 42,17 C46,21 54,21 58,17 C66,9 82,13 92,30 C80,47 62,53 50,53 C38,53 20,47 8,30 Z"
+    fill="url(#lipg)" stroke="#8f1040" stroke-width="1.5"/>
+  <path d="M8,30 C30,35 70,35 92,30" stroke="#8f1040" stroke-width="1.6" fill="none" opacity=".7"/>
+  <ellipse cx="34" cy="22" rx="9" ry="4" fill="rgba(255,255,255,.4)"/>
+</svg>`;
+function kissSound(){
+  if(!AC||!soundOn)return;
+  const now=AC.currentTime;
+  const src=AC.createBufferSource();src.buffer=noiseBuf();
+  const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1900;bp.Q.value=1.4;
+  const g=AC.createGain();
+  g.gain.setValueAtTime(.25,now);
+  g.gain.exponentialRampToValueAtTime(.001,now+.14);
+  src.connect(bp);bp.connect(g);g.connect(bus);
+  src.start(now);src.stop(now+.16);
+  const o=AC.createOscillator(),g2=AC.createGain();
+  o.type='sine';
+  o.frequency.setValueAtTime(640,now+.05);
+  o.frequency.exponentialRampToValueAtTime(180,now+.32);
+  g2.gain.setValueAtTime(0,now+.05);
+  g2.gain.linearRampToValueAtTime(.3,now+.09);
+  g2.gain.exponentialRampToValueAtTime(.001,now+.4);
+  o.connect(g2);g2.connect(bus);
+  o.start(now+.05);o.stop(now+.45);
+}
 document.getElementById('kissBtn').addEventListener('click',e=>{
-  const r=e.target.getBoundingClientRect(),x=r.left+r.width/2,y=r.top;
-  burst(x,y,26);
-  const mw=document.createElement('span');
-  mw.className='fx'; mw.textContent='MWAH! 💋💜';
-  mw.style.cssText='font-size:26px;font-weight:bold;color:#ff9ee0;text-shadow:0 0 14px rgba(255,150,230,.8)';
-  document.body.appendChild(mw);
-  mw.animate([
-    {transform:`translate(${x-70}px,${y-10}px) scale(.5)`,opacity:0},
-    {transform:`translate(${x-70}px,${y-90}px) scale(1.25)`,opacity:1,offset:.35},
-    {transform:`translate(${x-70}px,${y-150}px) scale(1.1)`,opacity:0}
-  ],{duration:2200,easing:'ease-out'}).onfinish=()=>mw.remove();
-  if(navigator.vibrate) navigator.vibrate(60);
+  const r=e.target.getBoundingClientRect(),x=r.left+r.width/2,y=Math.max(120,r.top-30);
+  kissSound();
+  burst(x,y,30);
+  const pop=document.createElement('div');
+  pop.className='kisspop';
+  pop.style.left=x+'px';pop.style.top=y+'px';
+  pop.innerHTML=`<div class="kissring"></div>${LIPS}<span class="mwah">MWAH!</span>`;
+  document.body.appendChild(pop);
+  if(navigator.vibrate)navigator.vibrate([60,40,60]);
+  setTimeout(()=>pop.remove(),1700);
 });
 
-/* ---------- dreamy music ---------- */
-let audio=null,musicOn=false,musicTimer=null;
+/* ============================================================
+   SOUND — love melody + living garden nature, auto-plays
+   (browsers unlock audio on her very first tap)
+   ============================================================ */
+let AC=null,bus=null,master=null;
+let soundOn=true,soundReady=false;
+function initAudio(){
+  if(AC)return;
+  AC=new (window.AudioContext||window.webkitAudioContext)();
+  master=AC.createGain();master.gain.value=0;master.connect(AC.destination);
+  bus=AC.createGain();bus.gain.value=1;bus.connect(master);
+  const dly=AC.createDelay(1);dly.delayTime.value=.42;      /* dreamy echo */
+  const fb=AC.createGain();fb.gain.value=.34;
+  const wet=AC.createGain();wet.gain.value=.4;
+  bus.connect(dly);dly.connect(fb);fb.connect(dly);dly.connect(wet);wet.connect(master);
+}
+function noiseBuf(){
+  const b=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
+  const d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  return b;
+}
+/* --- romantic: warm pad + music-box melody --- */
 const CHORDS=[[220,277.18,329.63],[174.61,220,261.63],[196,246.94,293.66],[164.81,207.65,246.94]];
-const PENTA=[440,523.25,587.33,659.25,783.99,880];
-function startMusic(){
-  audio=audio||new (window.AudioContext||window.webkitAudioContext)();
-  audio.resume();
-  audio.master=audio.master||audio.createGain();
-  audio.master.gain.value=0;
-  audio.master.connect(audio.destination);
-  audio.master.gain.linearRampToValueAtTime(.16,audio.currentTime+2);
-  let ci=0;
-  function playChord(){
-    if(!musicOn)return;
-    const now=audio.currentTime;
+const MEL=[440,523.25,659.25,587.33,523.25,440,392,440,523.25,587.33,659.25,783.99];
+let mi=0,ci=0;
+function padChord(){
+  if(soundOn){
+    const now=AC.currentTime;
     CHORDS[ci%CHORDS.length].forEach((f,i)=>{
-      const o=audio.createOscillator(),g=audio.createGain();
-      o.type='sine';o.frequency.value=f/2;
-      g.gain.setValueAtTime(0,now);
-      g.gain.linearRampToValueAtTime(.05+i*.008,now+2.2);
-      g.gain.linearRampToValueAtTime(0,now+6.4);
-      o.connect(g);g.connect(audio.master);o.start(now);o.stop(now+6.6);
+      [0,4].forEach(det=>{
+        const o=AC.createOscillator(),g=AC.createGain();
+        o.type='sine';o.frequency.value=f/2;o.detune.value=det;
+        g.gain.setValueAtTime(0,now);
+        g.gain.linearRampToValueAtTime(.028,now+2.4);
+        g.gain.linearRampToValueAtTime(0,now+7);
+        o.connect(g);g.connect(bus);o.start(now);o.stop(now+7.2);
+      });
+      if(i===0){
+        const o=AC.createOscillator(),g=AC.createGain();
+        o.type='sine';o.frequency.value=f/4;
+        g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.05,now+1.5);g.gain.linearRampToValueAtTime(0,now+6.8);
+        o.connect(g);g.connect(bus);o.start(now);o.stop(now+7);
+      }
     });
     ci++;
-    musicTimer=setTimeout(playChord,5200);
   }
-  function pluck(){
-    if(!musicOn)return;
-    const now=audio.currentTime,f=pick(PENTA);
-    const o=audio.createOscillator(),g=audio.createGain();
-    o.type='triangle';o.frequency.value=f;
-    g.gain.setValueAtTime(.09,now);
-    g.gain.exponentialRampToValueAtTime(.0001,now+1.8);
-    o.connect(g);g.connect(audio.master);o.start(now);o.stop(now+1.9);
-    setTimeout(pluck,rnd(1600,4200));
-  }
-  playChord(); setTimeout(pluck,1200);
+  setTimeout(padChord,6000);
 }
-/* ---------- sunrise / night toggle ---------- */
-document.getElementById('skyBtn').addEventListener('click',function(){
-  const dawn=document.body.classList.toggle('dawn');
-  this.textContent=dawn?'🌙':'🌅';
-  this.title=dawn?'Switch to night':'Switch to sunrise';
-  burst(W()/2,90,10);
+function melodyNote(){
+  if(soundOn){
+    const now=AC.currentTime,f=MEL[mi%MEL.length]*(Math.random()<.15?2:1);
+    mi++;
+    const o=AC.createOscillator(),o2=AC.createOscillator(),g=AC.createGain();
+    o.type='triangle';o.frequency.value=f;
+    o2.type='sine';o2.frequency.value=f*2;
+    g.gain.setValueAtTime(.07,now);
+    g.gain.exponentialRampToValueAtTime(.0001,now+2.2);
+    o.connect(g);o2.connect(g);g.connect(bus);
+    o.start(now);o2.start(now);o.stop(now+2.3);o2.stop(now+2.3);
+  }
+  setTimeout(melodyNote,rnd(900,2200));
+}
+/* --- nature: breeze, birdsong, leaf rustle --- */
+function breeze(){
+  const src=AC.createBufferSource();src.buffer=noiseBuf();src.loop=true;
+  const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=320;f.Q.value=.6;
+  const g=AC.createGain();g.gain.value=.05;
+  const lfo=AC.createOscillator(),lg=AC.createGain();
+  lfo.frequency.value=.07;lg.gain.value=140;
+  lfo.connect(lg);lg.connect(f.frequency);
+  const lfo2=AC.createOscillator(),lg2=AC.createGain();
+  lfo2.frequency.value=.05;lg2.gain.value=.025;
+  lfo2.connect(lg2);lg2.connect(g.gain);
+  src.connect(f);f.connect(g);g.connect(master);
+  src.start();lfo.start();lfo2.start();
+}
+function bird(){
+  if(soundOn){
+    const now=AC.currentTime;
+    const pan=AC.createStereoPanner?AC.createStereoPanner():null;
+    if(pan)pan.pan.value=rnd(-.8,.8);
+    const n=Math.floor(rnd(2,5));
+    let t=now;
+    for(let i=0;i<n;i++){
+      const o=AC.createOscillator(),g=AC.createGain();
+      const base=rnd(2100,3400);
+      o.type='sine';
+      o.frequency.setValueAtTime(base,t);
+      o.frequency.exponentialRampToValueAtTime(base*rnd(1.2,1.6),t+.07);
+      o.frequency.exponentialRampToValueAtTime(base*rnd(.8,1),t+.14);
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(.05,t+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,t+.16);
+      o.connect(g);
+      if(pan){g.connect(pan);pan.connect(bus);}else g.connect(bus);
+      o.start(t);o.stop(t+.2);
+      t+=rnd(.14,.3);
+    }
+  }
+  setTimeout(bird,rnd(2500,8000));
+}
+function rustle(){
+  if(soundOn){
+    const now=AC.currentTime;
+    const src=AC.createBufferSource();src.buffer=noiseBuf();
+    const f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=rnd(700,1400);f.Q.value=.8;
+    const g=AC.createGain();
+    g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.02,now+.25);g.gain.linearRampToValueAtTime(0,now+1.1);
+    src.connect(f);f.connect(g);g.connect(bus);
+    src.start(now);src.stop(now+1.2);
+  }
+  setTimeout(rustle,rnd(4000,9000));
+}
+function startSound(){
+  if(soundReady)return;soundReady=true;
+  initAudio();
+  AC.resume().then(()=>{
+    master.gain.linearRampToValueAtTime(.9,AC.currentTime+2.5);
+    padChord();setTimeout(melodyNote,800);
+    breeze();setTimeout(bird,1500);setTimeout(rustle,3000);
+    const mb=document.getElementById('musicBtn');
+    mb.classList.add('on');mb.textContent='\u{1F3B6}';
+  });
+}
+startSound(); /* tries immediately; browsers unlock it on her first tap */
+window.addEventListener('pointerdown',()=>{
+  if(soundOn&&!soundReady)startSound();
+  else if(AC&&AC.state==='suspended')AC.resume();
 });
-
 document.getElementById('musicBtn').addEventListener('click',function(){
-  musicOn=!musicOn;
-  this.classList.toggle('on',musicOn);
-  this.textContent=musicOn?'🎶':'🎵';
-  if(musicOn){startMusic();}
-  else{
-    clearTimeout(musicTimer);
-    if(audio&&audio.master)audio.master.gain.linearRampToValueAtTime(0,audio.currentTime+1);
+  soundOn=!soundOn;
+  this.classList.toggle('on',soundOn);
+  this.textContent=soundOn?'\u{1F3B6}':'\u{1F3B5}';
+  if(soundOn){
+    if(!soundReady)startSound();
+    else{AC.resume();master.gain.linearRampToValueAtTime(.9,AC.currentTime+1);}
+  }else if(AC){
+    master.gain.linearRampToValueAtTime(0,AC.currentTime+.8);
   }
 });
 </script>
