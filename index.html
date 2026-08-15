@@ -764,6 +764,13 @@ function rustle(){
 /* --- background song: "American Love" (acoustic) — Qing Madi — self-hosted, ad-free --- */
 const localSong=new Audio('assets/our-song.mp3');
 localSong.loop=true;localSong.volume=.9;localSong.preload='auto';
+localSong.muted=true;                 /* muted autoplay is always allowed */
+localSong.play().catch(()=>{});       /* song runs from page load */
+function unmuteSong(){
+  if(localSong&&localSong.muted){localSong.muted=false;localSong.volume=.9;}
+}
+/* scrolling / wheel / cursor movement unmutes it — no tap needed */
+['wheel','scroll','pointermove','touchmove'].forEach(ev=>window.addEventListener(ev,unmuteSong,{passive:true}));
 function startSound(){
   if(soundReady)return;soundReady=true;
   initAudio();
@@ -779,6 +786,7 @@ function unlockAll(){
   if(!soundReady&&soundOn)startSound();
   if(!unlocked){
     unlocked=true;
+    unmuteSong();
     const h=document.getElementById('hint');if(h)h.style.opacity=0;
     localSong.currentTime=0;localSong.play().catch(()=>{});
     let guard=0;
