@@ -787,7 +787,7 @@ function unlockAll(){
     },1200);
   }
 }
-['pointerdown','pointerup','keydown','touchend','touchcancel','wheel'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
+['pointerdown','pointerup','keydown','touchstart','touchend','touchcancel','wheel','scroll'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
 document.getElementById('skyBtn').addEventListener('click',function(){
   const dawn=document.body.classList.toggle('dawn');
   this.textContent=dawn?'\u{1F319}':'\u{1F305}';
