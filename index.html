@@ -207,7 +207,11 @@
     position:fixed;top:16px;left:16px;z-index:30;width:52px;height:52px;border-radius:50%;cursor:pointer;
     border:1px solid rgba(220,180,255,.5);background:rgba(30,10,55,.55);backdrop-filter:blur(8px);
     font-size:22px;color:#fff;box-shadow:0 6px 20px rgba(10,0,30,.55);transition:transform .15s}
-  #skyBtn:active{transform:scale(.9)}  .vmodal{position:fixed;inset:0;z-index:70;background:rgba(10,2,20,.88);backdrop-filter:blur(6px);
+  #skyBtn:active{transform:scale(.9)}
+  #sndBtn{position:fixed;bottom:16px;right:16px;z-index:31;cursor:pointer;border:none;
+    background:#a01324;color:#fff;font-family:Arial,Helvetica,sans-serif;font-weight:bold;
+    font-size:13px;letter-spacing:1px;padding:10px 18px;border-radius:6px;
+    box-shadow:0 4px 14px rgba(0,0,0,.5);animation:softPulse 2s ease-in-out infinite}  .vmodal{position:fixed;inset:0;z-index:70;background:rgba(10,2,20,.88);backdrop-filter:blur(6px);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:16px}
   .vmodal iframe{width:min(94vw,680px);aspect-ratio:16/9;border:0;border-radius:16px;
     box-shadow:0 20px 70px rgba(0,0,0,.7),0 0 40px rgba(160,80,255,.35)}
@@ -316,6 +320,7 @@
 </div>
 
 <div id="hint">✨ Touch anywhere — butterflies take flight &amp; the garden sings ✨</div>
+<button id="sndBtn">🔊 SOUND</button>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
 
@@ -777,9 +782,9 @@ window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('ytbox',{
     width:'2',height:'2',
     videoId:QING_VIDEO,
-    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1},
+    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,autoplay:1,mute:1},
     events:{
-      onReady:function(){ytReady=true;tryYT();},
+      onReady:function(){ytReady=true;try{ytPlayer.mute();ytPlayer.playVideo();}catch(e){}tryYT();},
       onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING){ytStarted=true;padStop();}}
     }
   });
@@ -798,17 +803,23 @@ function startSound(){
   initAudio();
   AC.resume().then(()=>{
     master.gain.linearRampToValueAtTime(.9,AC.currentTime+.4);
-    padStart();breeze();setTimeout(bird,300);setTimeout(rustle,800);
+    if(!ytStarted)padStart();
+    breeze();setTimeout(bird,300);setTimeout(rustle,800);
     tryYT();
   });
 }
-startSound(); /* tries immediately; browsers unlock it on her first tap */
-['pointerdown','keydown','touchend','wheel','scroll','pointermove'].forEach(ev=>{
-  window.addEventListener(ev,()=>{
-    if(soundOn&&!soundReady)startSound();
-    else if(AC&&AC.state==='suspended')AC.resume();
-    tryYT();
-  },{passive:true});
+startSound(); /* tries audible autoplay immediately */
+function unlockAll(){
+  if(AC&&AC.state==='suspended')AC.resume();
+  if(!soundReady&&soundOn)startSound();
+  if(ytPlayer&&ytPlayer.unMute){
+    try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.seekTo(0,true);ytPlayer.playVideo();}catch(e){}
+  }
+  tryYT();
+}
+['pointerdown','keydown','touchend'].forEach(ev=>window.addEventListener(ev,unlockAll,{passive:true}));
+document.getElementById('sndBtn').addEventListener('click',function(){
+  unlockAll();this.style.display='none';
 });
 document.getElementById('skyBtn').addEventListener('click',function(){
   const dawn=document.body.classList.toggle('dawn');
