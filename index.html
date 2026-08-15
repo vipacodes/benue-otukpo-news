@@ -708,25 +708,11 @@ function noiseBuf(){
   for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   return b;
 }
-/* --- ambient pad: zero silence until the song is playing --- */
-let padGain=null;
-function padStart(){
-  if(!AC||padGain)return;
-  padGain=AC.createGain();padGain.gain.value=0;padGain.connect(bus);
-  padGain.gain.linearRampToValueAtTime(.05,AC.currentTime+1);
-  [220,277.18,329.63].forEach(f=>{
-    const o=AC.createOscillator();o.type='sine';o.frequency.value=f/2;
-    o.connect(padGain);o.start();
-  });
-}
-function padStop(){
-  if(padGain)padGain.gain.linearRampToValueAtTime(0,AC.currentTime+1.2);
-}
 /* --- nature: breeze, birdsong, leaf rustle --- */
 function breeze(){
   const src=AC.createBufferSource();src.buffer=noiseBuf();src.loop=true;
   const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=320;f.Q.value=.6;
-  const g=AC.createGain();g.gain.value=.05;
+  const g=AC.createGain();g.gain.value=.03;
   const lfo=AC.createOscillator(),lg=AC.createGain();
   lfo.frequency.value=.07;lg.gain.value=140;
   lfo.connect(lg);lg.connect(f.frequency);
@@ -751,7 +737,7 @@ function bird(){
       o.frequency.exponentialRampToValueAtTime(base*rnd(1.2,1.6),t+.07);
       o.frequency.exponentialRampToValueAtTime(base*rnd(.8,1),t+.14);
       g.gain.setValueAtTime(0,t);
-      g.gain.linearRampToValueAtTime(.05,t+.02);
+      g.gain.linearRampToValueAtTime(.035,t+.02);
       g.gain.exponentialRampToValueAtTime(.0001,t+.16);
       o.connect(g);
       if(pan){g.connect(pan);pan.connect(bus);}else g.connect(bus);
@@ -783,7 +769,7 @@ window.onYouTubeIframeAPIReady=function(){
     playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,autoplay:1,mute:1},
     events:{
       onReady:function(){ytReady=true;try{ytPlayer.mute();ytPlayer.playVideo();}catch(e){}tryYT();},
-      onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING){ytStarted=true;padStop();}}
+      onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)ytStarted=true;}
     }
   });
 };
@@ -801,7 +787,6 @@ function startSound(){
   initAudio();
   AC.resume().then(()=>{
     master.gain.linearRampToValueAtTime(.9,AC.currentTime+.4);
-    if(!ytStarted)padStart();
     breeze();setTimeout(bird,300);setTimeout(rustle,800);
     tryYT();
   });
@@ -816,6 +801,17 @@ function unlockAll(){
     if(ytPlayer&&ytPlayer.unMute){
       try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.seekTo(0,true);ytPlayer.playVideo();}catch(e){}
     }
+    let guard=0;
+    const wd=setInterval(()=>{
+      guard++;
+      if(!ytPlayer||!ytPlayer.getPlayerState){if(guard>40)clearInterval(wd);return;}
+      let st=-1;try{st=ytPlayer.getPlayerState();}catch(e){}
+      if(st===1){clearInterval(wd);return;}           /* playing: leave it alone */
+      if(st===2||st===5||st===-1||st===0){            /* paused/buffering/ended/cued */
+        try{ytPlayer.unMute();ytPlayer.setVolume(70);ytPlayer.playVideo();}catch(e){}
+      }
+      if(guard>120)clearInterval(wd);
+    },1200);
   }
   tryYT();
 }
