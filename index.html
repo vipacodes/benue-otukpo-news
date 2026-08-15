@@ -75,14 +75,14 @@
 
   /* ============ BIG KISS POP ============ */
   .kisspop{position:fixed;z-index:40;pointer-events:none;transform:translate(-50%,-50%)}
-  .kisspop svg{width:clamp(120px,28vw,180px);display:block;
-    animation:kissScale 1.5s cubic-bezier(.3,1.5,.45,1) forwards;
-    filter:drop-shadow(0 6px 22px rgba(255,80,160,.6))}
-  @keyframes kissScale{0%{transform:scale(0) rotate(-18deg);opacity:0}
-    35%{transform:scale(1.3) rotate(6deg);opacity:1}
-    55%{transform:scale(.95) rotate(-2deg)}
-    75%{transform:scale(1.08)}
-    100%{transform:scale(1.12);opacity:0}}
+  .kisspop img{width:clamp(130px,30vw,200px);display:block;
+    animation:stamp 1.6s cubic-bezier(.2,1.4,.4,1) forwards;
+    filter:drop-shadow(0 4px 16px rgba(255,60,120,.5))}
+  @keyframes stamp{0%{transform:scale(2.1) rotate(-30deg);opacity:0}
+    22%{transform:scale(.92) rotate(-9deg);opacity:1}
+    34%{transform:scale(1.06) rotate(-11deg)}
+    70%{transform:scale(1.02) rotate(-10deg);opacity:1}
+    100%{transform:scale(1.1) rotate(-10deg);opacity:0}}
   .kissring{position:absolute;left:50%;top:50%;width:160px;height:160px;margin:-80px 0 0 -80px;
     border:4px solid rgba(255,140,210,.85);border-radius:50%;animation:ringx 1.1s ease-out forwards}
   @keyframes ringx{from{transform:scale(.2);opacity:1}to{transform:scale(2.4);opacity:0}}
@@ -628,34 +628,48 @@ function tick(){
 tick(); setInterval(tick,1000);
 
 /* ---------- kiss button: kiss sound + BIG kiss pop ---------- */
-const LIPS=`<svg viewBox="0 0 100 60">
-  <defs><linearGradient id="lipg" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#ff7fae"/><stop offset=".55" stop-color="#f23d7f"/><stop offset="1" stop-color="#c01e5f"/>
-  </linearGradient></defs>
-  <path d="M8,30 C18,13 34,9 42,17 C46,21 54,21 58,17 C66,9 82,13 92,30 C80,47 62,53 50,53 C38,53 20,47 8,30 Z"
-    fill="url(#lipg)" stroke="#8f1040" stroke-width="1.5"/>
-  <path d="M8,30 C30,35 70,35 92,30" stroke="#8f1040" stroke-width="1.6" fill="none" opacity=".7"/>
-  <ellipse cx="34" cy="22" rx="9" ry="4" fill="rgba(255,255,255,.4)"/>
-</svg>`;
+let KISS_URL='';
+keyFlood('assets/kiss.png').then(u=>KISS_URL=u);
+/* realistic kiss: smack + lip-part suction + low "mwah" formants */
 function kissSound(){
   if(!AC||!soundOn)return;
-  const now=AC.currentTime;
-  const src=AC.createBufferSource();src.buffer=noiseBuf();
-  const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1900;bp.Q.value=1.4;
-  const g=AC.createGain();
-  g.gain.setValueAtTime(.25,now);
-  g.gain.exponentialRampToValueAtTime(.001,now+.14);
-  src.connect(bp);bp.connect(g);g.connect(bus);
-  src.start(now);src.stop(now+.16);
-  const o=AC.createOscillator(),g2=AC.createGain();
-  o.type='sine';
-  o.frequency.setValueAtTime(640,now+.05);
-  o.frequency.exponentialRampToValueAtTime(180,now+.32);
-  g2.gain.setValueAtTime(0,now+.05);
-  g2.gain.linearRampToValueAtTime(.3,now+.09);
-  g2.gain.exponentialRampToValueAtTime(.001,now+.4);
-  o.connect(g2);g2.connect(bus);
-  o.start(now+.05);o.stop(now+.45);
+  const t=AC.currentTime;
+  const n1=AC.createBufferSource();n1.buffer=noiseBuf();
+  const bp1=AC.createBiquadFilter();bp1.type='bandpass';bp1.frequency.setValueAtTime(2400,t);bp1.Q.value=1.2;
+  const g1=AC.createGain();
+  g1.gain.setValueAtTime(.5,t);
+  g1.gain.exponentialRampToValueAtTime(.001,t+.06);
+  n1.connect(bp1);bp1.connect(g1);g1.connect(bus);
+  n1.start(t);n1.stop(t+.08);
+  const t2=t+.05;
+  const n2=AC.createBufferSource();n2.buffer=noiseBuf();
+  const bp2=AC.createBiquadFilter();bp2.type='bandpass';bp2.Q.value=2.5;
+  bp2.frequency.setValueAtTime(700,t2);
+  bp2.frequency.exponentialRampToValueAtTime(3200,t2+.12);
+  const g2=AC.createGain();
+  g2.gain.setValueAtTime(0,t2);
+  g2.gain.linearRampToValueAtTime(.28,t2+.03);
+  g2.gain.exponentialRampToValueAtTime(.001,t2+.16);
+  n2.connect(bp2);bp2.connect(g2);g2.connect(bus);
+  n2.start(t2);n2.stop(t2+.2);
+  const t3=t+.09;
+  const o=AC.createOscillator();o.type='sawtooth';
+  o.frequency.setValueAtTime(160,t3);
+  o.frequency.exponentialRampToValueAtTime(120,t3+.28);
+  const f1=AC.createBiquadFilter();f1.type='bandpass';f1.Q.value=5;
+  f1.frequency.setValueAtTime(450,t3);f1.frequency.exponentialRampToValueAtTime(750,t3+.25);
+  const f2=AC.createBiquadFilter();f2.type='bandpass';f2.Q.value=6;
+  f2.frequency.setValueAtTime(900,t3);f2.frequency.exponentialRampToValueAtTime(1300,t3+.25);
+  const g3=AC.createGain();
+  g3.gain.setValueAtTime(0,t3);
+  g3.gain.linearRampToValueAtTime(.3,t3+.04);
+  g3.gain.exponentialRampToValueAtTime(.001,t3+.34);
+  const m1=AC.createGain();m1.gain.value=.7;
+  const m2=AC.createGain();m2.gain.value=.4;
+  o.connect(f1);f1.connect(m1);m1.connect(g3);
+  o.connect(f2);f2.connect(m2);m2.connect(g3);
+  g3.connect(bus);
+  o.start(t3);o.stop(t3+.4);
 }
 document.getElementById('kissBtn').addEventListener('click',e=>{
   const r=e.target.getBoundingClientRect(),x=r.left+r.width/2,y=Math.max(120,r.top-30);
@@ -664,7 +678,7 @@ document.getElementById('kissBtn').addEventListener('click',e=>{
   const pop=document.createElement('div');
   pop.className='kisspop';
   pop.style.left=x+'px';pop.style.top=y+'px';
-  pop.innerHTML=`<div class="kissring"></div>${LIPS}<span class="mwah">MWAH!</span>`;
+  pop.innerHTML=`<div class="kissring"></div>${KISS_URL?`<img src="${KISS_URL}" alt="kiss">`:'💋'}<span class="mwah">MWAH!</span>`;
   document.body.appendChild(pop);
   if(navigator.vibrate)navigator.vibrate([60,40,60]);
   setTimeout(()=>pop.remove(),1700);
