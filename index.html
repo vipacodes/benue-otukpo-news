@@ -26,8 +26,8 @@
     transition:opacity 1.8s ease;
     filter:saturate(1.06) contrast(1.05);
   }
-  #gardenBG{background-image:url(assets/garden.jpg?v=3)}
-  #bgDawn{background-image:url(assets/garden-dawn.jpg?v=3);opacity:0}
+  #gardenBG{background-image:url(assets/garden.jpg?v=4)}
+  #bgDawn{background-image:url(assets/garden-dawn.jpg?v=4);opacity:0}
   body.dawn #bgDawn{opacity:1}
   body.dawn #gardenBG{opacity:0}
   @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.035) translateY(-.6%)}}
@@ -427,7 +427,7 @@ function keyFlood(src){
     im.src=src;
   });
 }
-keyFlood('assets/crown.png?v=3').then(u=>{document.getElementById('crownImg').src=u;});
+keyFlood('assets/crown.png?v=4').then(u=>{document.getElementById('crownImg').src=u;});
 const butterflies=[];
 const MAX_B=14;
 let SPR=[];
@@ -648,7 +648,7 @@ tick(); setInterval(tick,1000);
 
 /* ---------- kiss button: kiss sound + BIG kiss pop ---------- */
 let KISS_URL='';
-keyFlood('assets/kiss.png?v=3').then(u=>KISS_URL=u);
+keyFlood('assets/kiss.png?v=4').then(u=>KISS_URL=u);
 /* realistic kiss: smack + lip-part suction + low "mwah" formants */
 function kissSound(){
   if(!AC||!soundOn)return;
