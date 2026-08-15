@@ -141,7 +141,7 @@
   .cell span{font-size:clamp(11px,1.7vw,14px);letter-spacing:2px;color:#d5b3ff;text-transform:uppercase}
 
   /* heart frame for her photo / video */
-  .heartwrap{position:relative;width:min(72vw,330px);margin:0 auto;padding-top:8px}
+  .heartwrap{position:relative;width:min(72vw,330px);margin:0 auto;padding-top:8px;cursor:pointer}
   .heartborder{position:absolute;left:0;right:0;top:8px;bottom:34px;
     background:linear-gradient(120deg,#ffd88a,#b06ef0,#ff8fd6,#ffd88a);background-size:300% 300%;
     clip-path:url(#heartClip);animation:borderFlow 6s ease infinite;
@@ -605,10 +605,14 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
     el.addEventListener('error',()=>{i++;if(i<sources.length)el.src=sources[i];else el.remove();});
     el.src=sources[0];
   }
-  vid.addEventListener('loadeddata',()=>{ok();if(img.parentNode)img.remove();});
+  vid.addEventListener('loadeddata',()=>{ok();if(img.parentNode)img.remove();
+    document.querySelector('.heartcap').textContent='Our memories 💜 tap the heart for sound';});
   img.addEventListener('load',()=>{ok();if(vid.parentNode)vid.remove();});
-  chain(vid,['her.mp4','assets/her.mp4']);
+  chain(vid,['Me and my baby.mp4','her.mp4','assets/her.mp4']);
   chain(img,['her.jpg','assets/her.jpg']);
+  document.querySelector('.heartwrap').addEventListener('click',()=>{
+    if(vid.parentNode&&vid.readyState>0){vid.muted=!vid.muted;if(!vid.muted)vid.play();}
+  });
 })();
 /* ---------- sky tip fades after a while ---------- */
 setTimeout(()=>{document.getElementById('skyTip').style.opacity=0;},9000);
