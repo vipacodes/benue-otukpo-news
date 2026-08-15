@@ -318,7 +318,7 @@
   </footer>
 </div>
 
-<div id="hint">✨ Touch anywhere — music wakes, flowers bloom &amp; butterflies come to you ✨</div>
+<div id="hint">✨ Touch anywhere — butterflies take flight &amp; the garden sings ✨</div>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
 
@@ -438,7 +438,8 @@ function windSway(t,p){
    ============================================================ */
 const SPRITES=[
   'assets/bf-purple.png','assets/bf-pink.png',
-  'assets/bf-blue.png','assets/bf-sunset.png'
+  'assets/bf-blue.png','assets/bf-sunset.png',
+  'assets/bf-green.png','assets/bf-gold.png','assets/bf-white.png'
 ];
 function keySprite(src){
   return new Promise(res=>{
@@ -486,7 +487,7 @@ function keyFlood(src){
 }
 keyFlood('assets/crown.png?v=6').then(u=>{document.getElementById('crownImg').src=u;});
 const butterflies=[];
-const MAX_B=14;
+const MAX_B=18;
 let SPR=[];
 
 function setMode(b,t){
@@ -605,46 +606,15 @@ function sparkle(x,y){
     {transform:`translate(${x+rnd(-24,24)}px,${y+rnd(-30,10)}px) scale(1.1)`,opacity:0}
   ],{duration:700,easing:'ease-out'}).onfinish=()=>s.remove();
 }
-/* glowing magic flower for touch blooms */
-function magicFlowerSVG(){
-  const hue=pick([265,275,285,295,310]);
-  let petals='';
-  const n=Math.floor(rnd(6,9));
-  for(let i=0;i<n;i++){
-    petals+=`<ellipse cx="0" cy="-14" rx="6" ry="15" fill="hsl(${hue+rnd(-8,8)},85%,${rnd(66,78)}%)" opacity=".92" transform="rotate(${i*360/n})"/>`;
-  }
-  return `<svg viewBox="-32 -64 64 70">
-    <g transform="translate(0,-30)">${petals}
-      <circle r="6.5" fill="#fff3c9"/>
-      <circle r="3" fill="#ffd88a"/>
-    </g></svg>`;
-}
-function bloomAt(x,y){
-  const box=document.getElementById('blooms');
-  if(box.children.length>34) box.firstChild.remove();
-  const d=document.createElement('div');
-  d.className='bloom';
-  const size=rnd(40,72);
-  d.style.width=size+'px';
-  d.style.left=x+'px'; d.style.top=(y+size)+'px';
-  d.innerHTML=magicFlowerSVG();
-  box.appendChild(d);
-  d.animate([
-    {transform:'translate(-50%,-99%) scale(0)'},
-    {transform:'translate(-50%,-99%) scale(1.15)',offset:.7},
-    {transform:'translate(-50%,-99%) scale(1)'}
-  ],{duration:650,easing:'cubic-bezier(.34,1.5,.5,1)',fill:'backwards'});
-  sparkle(x,y);sparkle(x+12,y-8);sparkle(x-12,y-10);
-  setTimeout(()=>{d.style.transition='opacity .9s ease';d.style.opacity='0';
-    setTimeout(()=>d.remove(),950);},2000);
-}
 let hintDone=false;
 window.addEventListener('pointerdown',e=>{
   const x=e.clientX,y=e.clientY;
   if(!hintDone){hintDone=true;document.getElementById('hint').style.opacity=0;}
   burst(x,y,Math.floor(rnd(6,10)));
-  if(y>H()*0.4){ bloomAt(x,y); }
-  else if(butterflies.length<MAX_B){ makeButterfly(x,y); burst(x,y,8); }
+  if(butterflies.length<MAX_B){
+    makeButterfly(x,y); burst(x,y,8);
+    if(butterflies.length<MAX_B) makeButterfly(x+rnd(-40,40),y+rnd(-30,20));
+  }
   const sorted=[...butterflies].sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y));
   sorted.slice(0,2).forEach(b=>{b.tx=x+rnd(-40,40);b.ty=Math.max(50,y-rnd(20,70));b.ret=performance.now()+2600;b.mode='flit';});
   butterflies.forEach(b=>{
@@ -843,13 +813,13 @@ function rustle(){
   setTimeout(rustle,rnd(4000,9000));
 }
 /* --- background song: "American Love" — Qing Madi (official YouTube) --- */
-const QING_VIDEO='-UBNfYYnCnE';
+const QING_VIDEO='cypUlwCKq0k';
 let ytPlayer=null,ytReady=false,ytStarted=false;
 window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('ytbox',{
     width:'2',height:'2',
     videoId:QING_VIDEO,
-    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1},
+    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1,start:15},
     events:{
       onReady:function(){ytReady=true;tryYT();},
       onStateChange:function(e){if(e.data===YT.PlayerState.PLAYING)ytStarted=true;}
