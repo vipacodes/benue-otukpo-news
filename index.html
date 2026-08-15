@@ -20,16 +20,17 @@
 
   /* ============ LIVING PHOTO BACKGROUND ============ */
   #gardenBG,#bgDawn{
-    position:fixed;inset:-4%;z-index:0;pointer-events:none;
+    position:fixed;inset:0;z-index:0;pointer-events:none;
     background:center 78%/cover no-repeat;
     animation:kenburns 38s ease-in-out infinite alternate;transform-origin:50% 85%;
     transition:opacity 1.8s ease;
+    filter:saturate(1.06) contrast(1.05);
   }
   #gardenBG{background-image:url(assets/garden.jpg)}
   #bgDawn{background-image:url(assets/garden-dawn.jpg);opacity:0}
   body.dawn #bgDawn{opacity:1}
   body.dawn #gardenBG{opacity:0}
-  @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07) translateY(-1.2%)}}
+  @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.035) translateY(-.6%)}}
   #veil{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:linear-gradient(180deg,rgba(8,4,22,.82),rgba(8,4,22,.34) 24%,rgba(8,4,22,.05) 44%,rgba(8,4,22,0) 60%)}
   body.dawn #veil{background:linear-gradient(180deg,rgba(48,16,72,.52),rgba(48,16,72,.14) 26%,rgba(48,16,72,0) 50%)}
@@ -558,6 +559,8 @@ function bloomAt(x,y){
     {transform:'translate(-50%,-99%) scale(1)'}
   ],{duration:650,easing:'cubic-bezier(.34,1.5,.5,1)',fill:'backwards'});
   sparkle(x,y);sparkle(x+12,y-8);sparkle(x-12,y-10);
+  setTimeout(()=>{d.style.transition='opacity .9s ease';d.style.opacity='0';
+    setTimeout(()=>d.remove(),950);},2000);
 }
 let hintDone=false;
 window.addEventListener('pointerdown',e=>{
