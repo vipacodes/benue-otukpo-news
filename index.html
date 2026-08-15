@@ -673,16 +673,14 @@ function kissSound(){
   o.start(t3);o.stop(t3+.4);
 }
 document.getElementById('kissBtn').addEventListener('click',e=>{
-  const r=e.target.getBoundingClientRect(),x=r.left+r.width/2,y=Math.max(120,r.top-30);
   kissSound();
-  burst(x,y,30);
   const pop=document.createElement('div');
   pop.className='kisspop';
-  pop.style.left=x+'px';pop.style.top=y+'px';
-  pop.innerHTML=`<div class="kissring"></div>${KISS_URL?`<img src="${KISS_URL}" alt="kiss">`:'💋'}<span class="mwah">MWAH!</span>`;
+  pop.innerHTML=`<div class="kissring"></div>${KISS_URL?`<img src="${KISS_URL}" alt="kiss">`:'💋'}`;
   document.body.appendChild(pop);
-  if(navigator.vibrate)navigator.vibrate([60,40,60]);
-  setTimeout(()=>pop.remove(),1700);
+  setTimeout(()=>burst(W()/2,H()/2,28),700);
+  if(navigator.vibrate)navigator.vibrate([90,60,90]);
+  setTimeout(()=>pop.remove(),2400);
 });
 
 /* ============================================================
