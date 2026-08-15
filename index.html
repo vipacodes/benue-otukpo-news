@@ -141,18 +141,18 @@
   .cell span{font-size:clamp(11px,1.7vw,14px);letter-spacing:2px;color:#d5b3ff;text-transform:uppercase}
 
   /* heart frame for her photo / video */
-  .heartwrap{position:relative;width:min(72vw,330px);margin:0 auto;padding-top:8px;cursor:pointer}
-  .heartborder{position:absolute;left:0;right:0;top:8px;bottom:34px;
-    background:linear-gradient(120deg,#ffd88a,#b06ef0,#ff8fd6,#ffd88a);background-size:300% 300%;
-    clip-path:url(#heartClip);animation:borderFlow 6s ease infinite;
-    filter:drop-shadow(0 0 18px rgba(200,120,255,.55))}
-  .heartframe{position:absolute;left:2%;right:2%;top:calc(8px + 2%);bottom:calc(34px + 2%);
-    clip-path:url(#heartClip);overflow:hidden;background:rgba(25,8,48,.55)}
-  .heartframe img,.heartframe video{width:100%;height:100%;object-fit:cover;display:block}
+  .heartwrap{position:relative;width:min(84vw,440px);aspect-ratio:1;margin:0 auto;cursor:pointer}
+  .heartborder{position:absolute;inset:0;
+    background:linear-gradient(120deg,#e793ff,#8a2bff,#c44dff,#e793ff);background-size:300% 300%;
+    clip-path:url(#heartClip);animation:borderFlow 5s ease infinite,neon 2.4s ease-in-out infinite alternate}
+  @keyframes neon{from{filter:drop-shadow(0 0 8px rgba(196,90,255,.9)) drop-shadow(0 0 22px rgba(150,40,255,.55))}
+    to{filter:drop-shadow(0 0 14px rgba(220,140,255,1)) drop-shadow(0 0 42px rgba(160,50,255,.8))}}
+  .heartframe{position:absolute;inset:2.2%;clip-path:url(#heartClip);overflow:hidden;background:rgba(25,8,48,.55)}
+  .heartframe img,.heartframe video{width:100%;height:100%;object-fit:cover;object-position:50% 35%;display:block}
   .heartfallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     background:radial-gradient(circle at 50% 38%,rgba(150,80,220,.5),rgba(30,10,55,.7))}
-  .heartcap{margin-top:10px;font-style:italic;color:#ffe1f7;font-size:clamp(16px,2.6vw,20px);
-    text-shadow:0 2px 12px rgba(15,3,35,.85)}
+  .heartcap{position:absolute;left:0;right:0;top:100%;margin-top:18px;font-style:italic;color:#ffe1f7;
+    font-size:clamp(16px,2.6vw,20px);text-shadow:0 2px 12px rgba(15,3,35,.85)}
 
   /* sky tip bubble */
   #skyTip{position:fixed;top:76px;left:16px;z-index:29;max-width:200px;pointer-events:none;
@@ -304,7 +304,8 @@
   <footer class="reveal">
     Every butterfly on this page flies for you, Baby 🦋<br>
     Every flower blooms because of you 🌸<br>
-    Made with all my heart, for Gheefted — my Baby 👑💜
+    Made with all my heart, for Gheefted — my Baby 👑💜<br>
+    <span style="font-size:12px;opacity:.75">🎹 “There is Romance” — Kevin MacLeod (incompetech.com) · CC BY 3.0</span>
   </footer>
 </div>
 
@@ -695,6 +696,7 @@ function initAudio(){
   AC=new (window.AudioContext||window.webkitAudioContext)();
   master=AC.createGain();master.gain.value=0;master.connect(AC.destination);
   bus=AC.createGain();bus.gain.value=1;bus.connect(master);
+  scoreG=AC.createGain();scoreG.connect(bus);
   const dly=AC.createDelay(1);dly.delayTime.value=.42;      /* dreamy echo */
   const fb=AC.createGain();fb.gain.value=.34;
   const wet=AC.createGain();wet.gain.value=.4;
@@ -707,7 +709,7 @@ function noiseBuf(){
   return b;
 }
 /* --- romantic score: piano waltz + strings, with reverb --- */
-let verb=null;
+let verb=null,scoreG=null;
 function makeVerb(){
   const len=Math.floor(AC.sampleRate*2.4);
   const buf=AC.createBuffer(2,len,AC.sampleRate);
@@ -737,7 +739,7 @@ function piano(f,t,dur,vel){
     g.gain.setValueAtTime(0,t);
     g.gain.linearRampToValueAtTime(vel*a,t+.008);
     g.gain.exponentialRampToValueAtTime(.0001,t+Math.max(.5,dur*1.1));
-    o.connect(g);g.connect(bus);o.start(t);o.stop(t+dur*1.2+.1);
+    o.connect(g);g.connect(scoreG);o.start(t);o.stop(t+dur*1.2+.1);
   });
 }
 function strings(ch,t,dur){
@@ -749,7 +751,7 @@ function strings(ch,t,dur){
       g.gain.setValueAtTime(0,t);
       g.gain.linearRampToValueAtTime(.012,t+1.1);
       g.gain.linearRampToValueAtTime(0,t+dur+.8);
-      o.connect(lp);lp.connect(g);g.connect(bus);
+      o.connect(lp);lp.connect(g);g.connect(scoreG);
       o.start(t);o.stop(t+dur+1);
     });
   });
@@ -819,12 +821,30 @@ function rustle(){
   }
   setTimeout(rustle,rnd(4000,9000));
 }
+const SONG_URL='https://incompetech.com/music/royalty-free/mp3-royaltyfree/There%20is%20Romance.mp3';
+let songEl=null,useSong=false,songTried=false;
+function trySong(){
+  if(songTried)return;songTried=true;
+  songEl=new Audio();
+  songEl.loop=true;songEl.volume=.8;
+  const srcs=['song.mp3','assets/song.mp3',SONG_URL];
+  let i=0;
+  songEl.addEventListener('error',()=>{i++;if(i<srcs.length){songEl.src=srcs[i];songEl.load();tryPlay();}else songEl=null;});
+  songEl.src=srcs[0];
+}
+function tryPlay(){
+  if(!songEl)return;
+  songEl.play().then(()=>{
+    useSong=true;
+    if(scoreG)scoreG.gain.linearRampToValueAtTime(0,AC.currentTime+1.5);
+  }).catch(()=>{});
+}
 function startSound(){
   if(soundReady)return;soundReady=true;
   initAudio();
   AC.resume().then(()=>{
     master.gain.linearRampToValueAtTime(.9,AC.currentTime+2.5);
-    makeVerb();scheduleLoop();
+    trySong();tryPlay();makeVerb();scheduleLoop();
     breeze();setTimeout(bird,1500);setTimeout(rustle,3000);
     const mb=document.getElementById('musicBtn');
     mb.classList.add('on');mb.textContent='\u{1F3B6}';
@@ -834,6 +854,7 @@ startSound(); /* tries immediately; browsers unlock it on her first tap */
 window.addEventListener('pointerdown',()=>{
   if(soundOn&&!soundReady)startSound();
   else if(AC&&AC.state==='suspended')AC.resume();
+  if(soundOn)tryPlay();
 });
 document.getElementById('musicBtn').addEventListener('click',function(){
   soundOn=!soundOn;
@@ -841,9 +862,10 @@ document.getElementById('musicBtn').addEventListener('click',function(){
   this.textContent=soundOn?'\u{1F3B6}':'\u{1F3B5}';
   if(soundOn){
     if(!soundReady)startSound();
-    else{AC.resume();master.gain.linearRampToValueAtTime(.9,AC.currentTime+1);}
-  }else if(AC){
-    master.gain.linearRampToValueAtTime(0,AC.currentTime+.8);
+    else{AC.resume();master.gain.linearRampToValueAtTime(.9,AC.currentTime+1);tryPlay();}
+  }else{
+    if(AC)master.gain.linearRampToValueAtTime(0,AC.currentTime+.8);
+    if(songEl)songEl.pause();
   }
 });
 </script>

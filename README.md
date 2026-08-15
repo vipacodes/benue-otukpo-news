@@ -35,7 +35,11 @@ The heart frame looks for these files (root of the repo first, then `assets/`):
 
 Until a file exists, the heart shows a beating 💜.
 
-## Personalize
+## Your own real song 🎵
+The page plays a real licensed piano love song ("There is Romance" — Kevin
+MacLeod, CC BY 3.0) together with the garden nature sounds.
+Want **your** song instead? Upload it as `song.mp3` to the repo root (same
+Add file → Upload files trick) and it takes over automatically.
 - **Start date** (for the live counter): open `index.html`, find
   `const ANNIVERSARY = new Date('2024-08-15T00:00:00');` near the top of the
   `<script>` and change it to your real date.
