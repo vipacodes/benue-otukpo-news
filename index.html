@@ -240,6 +240,7 @@
 <div id="bgDawn"></div>
 <div id="veil"></div>
 <div id="swayLayer"></div>
+<div id="ytbox" style="position:fixed;bottom:0;right:0;width:2px;height:2px;opacity:.01;pointer-events:none"></div>
 <div id="blooms"></div>
 
 <div id="content">
@@ -324,15 +325,13 @@
     Every butterfly on this page flies for you, Baby 🦋<br>
     Every flower blooms because of you 🌸<br>
     Made with all my heart, for Gheefted — my Baby 👑💜<br>
-    <span style="font-size:12px;opacity:.75">🎧 “American Love” — Qing Madi via the 🎧 button &nbsp;·&nbsp; 🎹 “There is Romance” — Kevin MacLeod · CC BY 3.0</span>
+    <span style="font-size:12px;opacity:.75">🎧 Background song: “American Love” — Qing Madi &nbsp;·&nbsp; 🎹 “There is Romance” — Kevin MacLeod · CC BY 3.0</span>
   </footer>
 </div>
 
 <div id="hint">✨ Touch anywhere — music wakes, flowers bloom &amp; butterflies come to you ✨</div>
 <button id="skyBtn" title="Switch night / sunrise">🌙</button>
 <div id="skyTip">Baby, tap this 🌙 button anytime to change my garden from sunrise to starlight ✨</div>
-<button id="songBtn" title="Our song — Qing Madi">🎧</button>
-<button id="musicBtn" title="Play dreamy music">🎵</button>
 
 <script>
 /* ============================================================
@@ -784,7 +783,6 @@ function initAudio(){
   AC=new (window.AudioContext||window.webkitAudioContext)();
   master=AC.createGain();master.gain.value=0;master.connect(AC.destination);
   bus=AC.createGain();bus.gain.value=1;bus.connect(master);
-  scoreG=AC.createGain();scoreG.connect(bus);
   const dly=AC.createDelay(1);dly.delayTime.value=.42;      /* dreamy echo */
   const fb=AC.createGain();fb.gain.value=.34;
   const wet=AC.createGain();wet.gain.value=.4;
@@ -795,68 +793,6 @@ function noiseBuf(){
   const d=b.getChannelData(0);
   for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   return b;
-}
-/* --- romantic score: piano waltz + strings, with reverb --- */
-let verb=null,scoreG=null;
-function makeVerb(){
-  const len=Math.floor(AC.sampleRate*2.4);
-  const buf=AC.createBuffer(2,len,AC.sampleRate);
-  for(let c=0;c<2;c++){const d=buf.getChannelData(c);
-    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8);}
-  verb=AC.createConvolver();verb.buffer=buf;
-  const vg=AC.createGain();vg.gain.value=.55;
-  verb.connect(vg);vg.connect(master);
-  const send=AC.createGain();send.gain.value=.5;
-  bus.connect(send);send.connect(verb);
-}
-const BPM=84,BEAT=60/BPM,BAR=BEAT*3;
-const SCORE=[
- {ch:[220,261.63,329.63],mel:[[440,2],[523.25,1]]},
- {ch:[174.61,220,261.63],mel:[[587.33,2],[523.25,1]]},
- {ch:[261.63,329.63,392],mel:[[659.25,2],[587.33,1]]},
- {ch:[196,246.94,293.66],mel:[[493.88,3]]},
- {ch:[220,261.63,329.63],mel:[[440,2],[523.25,1]]},
- {ch:[174.61,220,261.63],mel:[[698.46,2],[659.25,1]]},
- {ch:[261.63,329.63,392],mel:[[587.33,2],[493.88,1]]},
- {ch:[196,246.94,293.66],mel:[[440,3]]}
-];
-function piano(f,t,dur,vel){
-  [[1,1],[2,.4],[3,.18],[4,.08]].forEach(([m,a])=>{
-    const o=AC.createOscillator(),g=AC.createGain();
-    o.type='sine';o.frequency.value=f*m;
-    g.gain.setValueAtTime(0,t);
-    g.gain.linearRampToValueAtTime(vel*a,t+.008);
-    g.gain.exponentialRampToValueAtTime(.0001,t+Math.max(.5,dur*1.1));
-    o.connect(g);g.connect(scoreG);o.start(t);o.stop(t+dur*1.2+.1);
-  });
-}
-function strings(ch,t,dur){
-  ch.forEach(f=>{
-    [-6,5].forEach(det=>{
-      const o=AC.createOscillator(),g=AC.createGain(),lp=AC.createBiquadFilter();
-      o.type='sawtooth';o.frequency.value=f/2;o.detune.value=det;
-      lp.type='lowpass';lp.frequency.value=750;
-      g.gain.setValueAtTime(0,t);
-      g.gain.linearRampToValueAtTime(.012,t+1.1);
-      g.gain.linearRampToValueAtTime(0,t+dur+.8);
-      o.connect(lp);lp.connect(g);g.connect(scoreG);
-      o.start(t);o.stop(t+dur+1);
-    });
-  });
-}
-function scheduleLoop(){
-  if(!soundOn){setTimeout(scheduleLoop,2000);return;}
-  const t0=AC.currentTime+.15;
-  SCORE.forEach((bar,i)=>{
-    const tb=t0+i*BAR,[rt,th,fi]=bar.ch;
-    piano(rt/2,tb,BEAT*1.6,.16);
-    piano(th,tb+BEAT,BEAT*.9,.07);
-    piano(fi,tb+2*BEAT,BEAT*.9,.07);
-    strings(bar.ch,tb,BAR);
-    let mt=tb;
-    bar.mel.forEach(([f,b])=>{piano(f,mt,b*BEAT*.95,.14);mt+=b*BEAT;});
-  });
-  setTimeout(scheduleLoop,SCORE.length*BAR*1000-120);
 }
 /* --- nature: breeze, birdsong, leaf rustle --- */
 function breeze(){
@@ -909,40 +845,38 @@ function rustle(){
   }
   setTimeout(rustle,rnd(4000,9000));
 }
-const PIANO_URL='https://incompetech.com/music/royalty-free/mp3-royaltyfree/There%20is%20Romance.mp3';
-let songEl=null,useSong=false,songTried=false;
-function trySong(){
-  if(songTried)return;songTried=true;
-  songEl=new Audio();
-  songEl.loop=true;songEl.volume=.8;
-  const srcs=['song.mp3','assets/song.mp3',PIANO_URL];
-  let i=0;
-  songEl.addEventListener('error',()=>{i++;if(i<srcs.length){songEl.src=srcs[i];songEl.load();tryPlay();}else songEl=null;});
-  songEl.src=srcs[0];
-}
-function tryPlay(){
-  if(!songEl)return;
-  songEl.play().then(()=>{
-    useSong=true;
-    if(scoreG)scoreG.gain.linearRampToValueAtTime(0,AC.currentTime+1.5);
-  }).catch(()=>{});
+/* --- background song: "American Love" — Qing Madi (official YouTube) --- */
+const QING_VIDEO='-UBNfYYnCnE';
+let ytPlayer=null,ytReady=false,ytStarted=false;
+window.onYouTubeIframeAPIReady=function(){
+  ytPlayer=new YT.Player('ytbox',{
+    width:'2',height:'2',
+    videoId:QING_VIDEO,
+    playerVars:{controls:0,loop:1,playlist:QING_VIDEO,rel:0,playsinline:1},
+    events:{onReady:function(){ytReady=true;tryYT();}}
+  });
+};
+(function(){const t=document.createElement('script');t.src='https://www.youtube.com/iframe_api';document.head.appendChild(t);})();
+function tryYT(){
+  if(ytReady&&!ytStarted&&ytPlayer&&ytPlayer.playVideo){
+    ytStarted=true;
+    try{ytPlayer.setVolume(70);ytPlayer.playVideo();}catch(e){}
+  }
 }
 function startSound(){
   if(soundReady)return;soundReady=true;
   initAudio();
   AC.resume().then(()=>{
     master.gain.linearRampToValueAtTime(.9,AC.currentTime+2.5);
-    trySong();tryPlay();makeVerb();scheduleLoop();
     breeze();setTimeout(bird,1500);setTimeout(rustle,3000);
-    const mb=document.getElementById('musicBtn');
-    mb.classList.add('on');mb.textContent='\u{1F3B6}';
+    tryYT();
   });
 }
 startSound(); /* tries immediately; browsers unlock it on her first tap */
 window.addEventListener('pointerdown',()=>{
   if(soundOn&&!soundReady)startSound();
   else if(AC&&AC.state==='suspended')AC.resume();
-  if(soundOn)tryPlay();
+  tryYT();
 });
 document.getElementById('skyBtn').addEventListener('click',function(){
   const dawn=document.body.classList.toggle('dawn');
@@ -950,28 +884,7 @@ document.getElementById('skyBtn').addEventListener('click',function(){
   this.title=dawn?'Switch to night':'Switch to sunrise';
   burst(W()/2,90,10);
 });
-/* our song: Qing Madi — official video, plays on tap */
-const QING_VIDEO='-UBNfYYnCnE';
-document.getElementById('songBtn').addEventListener('click',()=>{
-  const m=document.createElement('div');
-  m.className='vmodal';
-  m.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${QING_VIDEO}?autoplay=1&rel=0" title="Qing Madi - American Love" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe><button class="vclose">Close ✕</button>`;
-  m.querySelector('.vclose').addEventListener('click',()=>m.remove());
-  m.addEventListener('click',e=>{if(e.target===m)m.remove();});
-  document.body.appendChild(m);
-});
-document.getElementById('musicBtn').addEventListener('click',function(){
-  soundOn=!soundOn;
-  this.classList.toggle('on',soundOn);
-  this.textContent=soundOn?'\u{1F3B6}':'\u{1F3B5}';
-  if(soundOn){
-    if(!soundReady)startSound();
-    else{AC.resume();master.gain.linearRampToValueAtTime(.9,AC.currentTime+1);tryPlay();}
-  }else{
-    if(AC)master.gain.linearRampToValueAtTime(0,AC.currentTime+.8);
-    if(songEl)songEl.pause();
-  }
-});
+
 </script>
 </body>
 </html>
